@@ -33,9 +33,13 @@
 
 uniform mat4 uMVP; // Step 1
 layout (location = 0) in vec4 aPosition;
+layout (location = 3) in vec4 vertColor; // Step 3
+out vec4 varyColor; // Step 4
 
 void main()
 {
 	vec4 vert = uMVP * aPosition; // Step 2a
 	gl_Position = vert; // Step 2b
+
+	varyColor = vertColor; // Step 5
 }

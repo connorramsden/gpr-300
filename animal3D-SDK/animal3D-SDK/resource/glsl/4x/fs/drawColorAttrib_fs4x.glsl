@@ -28,11 +28,11 @@
 //	1) declare varying to receive input vertex color from vertex shader
 //	2) assign vertex color to output color
 
-in vec4 uColor; // Step 1 (varying deprecated according to A3 console)
+in vec4 varyColor; // Step 1 (varying deprecated according to A3 console, using "in" instead)
 out vec4 rtFragColor;
 
 void main()
 {
 	// DUMMY OUTPUT: all fragments are OPAQUE RED
-	rtFragColor = uColor;
+	rtFragColor = varyColor;
 }

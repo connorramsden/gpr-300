@@ -33,6 +33,5 @@ out vec4 rtFragColor;
 
 void main()
 {
-	// DUMMY OUTPUT: all fragments are OPAQUE WHITE
 	rtFragColor = uColor; // Step 2
 }
