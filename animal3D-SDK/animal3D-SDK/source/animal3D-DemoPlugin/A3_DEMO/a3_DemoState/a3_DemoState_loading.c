@@ -440,7 +440,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 			// vs
 			// base
-			{ { { 0 },	"shdr-vs:passthru",					a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passthru_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:passthru",					a3shader_vertex  ,	1,{ A3_DEMO_VS"passthru_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:passthru-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passthru_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-col-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passColor_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:passthru-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passthru_transform_instanced_vs4x.glsl" } } },
@@ -511,13 +511,13 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	// 02-shading programs: 
 	// ****TO-DO: 
 	//	-> 2.1b: texturing program initialization
-	/*
+	
 	// texturing program
 	currentDemoProg = demoState->prog_drawTexture;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_fs->shader);
-	*/
+	
 	// ****TO-DO: 
 	//	-> 3.1a: Lambert shading program initialization
 	/*
@@ -538,13 +538,13 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	*/
 	// ****TO-DO: 
 	//	-> 2.1b: nonphotorealistic shading program initialization
-	/*
+	
 	// nonphotorealistic shading program
 	currentDemoProg = demoState->prog_drawNonphoto_multi;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Nonphoto-multi");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawNonphoto_multi_fs->shader);
-	*/
+	
 
 
 	// activate a primitive for validation
