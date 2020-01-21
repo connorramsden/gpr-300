@@ -300,6 +300,7 @@ void a3demo_render_main(const a3_DemoState *demoState,
 
 	// ****TO-DO: 
 	//	-> 5b. render skybox or clear buffers
+	
 	// skybox or regular clear
 	glDisable(GL_BLEND);
 	if (demoState->displaySkybox)
@@ -329,6 +330,7 @@ void a3demo_render_main(const a3_DemoState *demoState,
 		//	skybox will draw over everything otherwise
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
+	
 
 
 	// ****TO-DO: 
@@ -359,6 +361,7 @@ void a3demo_render_main(const a3_DemoState *demoState,
 		case 0: {
 			// ****TO-DO: 
 			//	-> 5d. render objects
+			
 			// select program based on settings
 			currentDemoProgram = demoState->prog_drawColorUnif;
 			a3shaderProgramActivate(currentDemoProgram->program);
@@ -390,6 +393,7 @@ void a3demo_render_main(const a3_DemoState *demoState,
 				currentDrawable = drawable[k];
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
+			
 		}	break;
 			// end geometry pass
 		}
@@ -414,7 +418,7 @@ void a3demo_render_main(const a3_DemoState *demoState,
 
 	// ****TO-DO: 
 	//	-> 5e. render coordinate axes
-
+	
 	// superimpose axes
 	// draw coordinate axes in front of everything
 	currentDemoProgram = demoState->prog_drawColorAttrib;
