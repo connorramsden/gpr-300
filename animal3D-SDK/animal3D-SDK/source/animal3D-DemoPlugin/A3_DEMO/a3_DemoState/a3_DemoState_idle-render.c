@@ -370,12 +370,12 @@ void a3demo_render_main(const a3_DemoState *demoState,
 		//	-> 2.1e: replace uniform color program with texturing program
 		//currentDemoProgram = demoState->prog_drawColorUnif;
 		currentDemoProgram = demoState->prog_drawTexture;
-		/*
+		
 		a3shaderProgramActivate(currentDemoProgram->program);
 		a3real4x4Product(modelViewProjectionMat.m, activeCamera->viewProjectionMat.m, currentSceneObject->modelMat.m);
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
-		*/
+		
 		// ****TO-DO: 
 		//	-> 2.1f: activate skybox texture
 		a3textureActivate(demoState->tex_skybox_clouds, a3tex_unit00);

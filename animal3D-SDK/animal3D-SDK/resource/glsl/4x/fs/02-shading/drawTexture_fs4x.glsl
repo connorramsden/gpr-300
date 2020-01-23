@@ -30,10 +30,16 @@
 //	3) sample texture using texture coordinate
 //	4) assign sample to output color
 
+in vec4 vTexCoord; // Step 2
+
+uniform mat4 uAtlas; // Step 1
+
 out vec4 rtFragColor;
 
 void main()
 {
+	vec4 sampleTex = uAtlas * vTexCoord; // Step 3 (might not work right?)
+
 	// DUMMY OUTPUT: all fragments are OPAQUE WHITE
-	rtFragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	rtFragColor = sampleTex; // Step 4
 }
