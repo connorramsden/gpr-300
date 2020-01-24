@@ -33,8 +33,22 @@
 
 out vec4 rtFragColor;
 
+uniform sampler2D uTex_dm;
+uniform int uLightCt; //light count
+
+uniform vec4 uLightPos[];
+uniform vec4 uLightCol[];
+uniform float uLightSz[];
+uniform float uLightSzInvSq[];
+//idle renderer, 459
+
 void main()
 {
-	// DUMMY OUTPUT: all fragments are OPAQUE RED
-	rtFragColor = vec4(1.0, 0.0, 0.0, 1.0);
+	vec4 vert = vec4(0.0);
+	
+	for(int i = 0; i < uLightCt; i++)
+	{
+		float diffuse = 
+	}
+	rtFragColor = vert;
 }
