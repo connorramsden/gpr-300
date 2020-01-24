@@ -31,24 +31,31 @@
 //	4) implement Lambert shading model
 //	Note: test all data and inbound values before using them!
 
+in vec4 modelViewNorm;
+in vec4 viewPos;
+
 out vec4 rtFragColor;
 
 uniform sampler2D uTex_dm;
-uniform int uLightCt; //light count
 
+uniform int uLightCt; //light count
 uniform vec4 uLightPos[];
 uniform vec4 uLightCol[];
 uniform float uLightSz[];
 uniform float uLightSzInvSq[];
 //idle renderer, 459
 
+
+//https://gist.github.com/TomMinor/088766855a5fb161e236
+//Used for help, but had to implement for animal3D, just helped me understand lambert model
 void main()
 {
 	vec4 vert = vec4(0.0);
 	
 	for(int i = 0; i < uLightCt; i++)
 	{
-		float diffuse = 
+		vec3 diffuse = dot(modelViewNorm, viewPos - uLightPos[i]);
+		vert *= diffuse;
 	}
 	rtFragColor = vert;
 }
