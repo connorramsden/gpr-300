@@ -30,16 +30,15 @@
 //	3) sample texture using texture coordinate
 //	4) assign sample to output color
 
-in vec4 vTexCoord; // Step 2
+in vec4 vTexCoord; // Step 2 - inbound texture coordinate
 
-uniform mat4 uAtlas; // Step 1
+uniform mat4 uTex_dm; // Step 1 - found in a3_DemoState_loading
 
 out vec4 rtFragColor;
 
 void main()
 {
-	vec4 sampleTex = uAtlas * vTexCoord; // Step 3 (might not work right?)
-
-	// DUMMY OUTPUT: all fragments are OPAQUE WHITE
-	rtFragColor = sampleTex; // Step 4
+	vec4 sampleTex = uTex_dm * vTexCoord; // Step 3 - righthand mult to sample texture
+	
+	rtFragColor = sampleTex; // Step 4 - assigning sample to output
 }
