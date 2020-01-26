@@ -47,17 +47,34 @@ uniform float uLightSzInvSq[];
 //idle renderer, 459
 
 
-//https://gist.github.com/TomMinor/088766855a5fb161e236
+//https://www.learnopengles.com/tag/lambertian-reflectance/
+//http://www.opengl-tutorial.org/beginners-tutorials/tutorial-8-basic-shading/
 //Used for help, but had to implement for animal3D, just helped me understand lambert model
 void main()
 {
 	vec4 vert = texture2D(uTex_dm, vec2(vTexCoord));
+	//https://stackoverflow.com/questions/41984724/calculating-angle-between-two-vectors-in-glsl
+
+	//float angleTheta = clamp( dot(), 0,1);
 	
+	float lambert = 1.0;
+	float color = 0.0f;
 	for(int i = 0; i < uLightCt; i++)
 	{
-		float diffuse = dot(modelViewNorm, viewPos - uLightPos[i]);
-		vert += uLightCol[i] *diffuse;
+		//started phong by accident
+		//vec4 lightVec = uLightPos[i]-viewPos;
+		//vec4 lightVec_n = normalize(lightVec);
+		//vec4 diffuse = dot(modelViewNorm, lightVec_n) * uLightCol[i];
+		//vec4 reflection = (2 * dot(modelViewNorm, lightVec_n) * modelViewNorm) - lightVec_n;
+		//vec4 specular = viewPos - uLightPos[i];
+
+		vec4 lightVec = normalize(uLightPos[i] - viewPos);
+		float distance = length(uLightPos[i] - viewPos);
+		lambert = dot(modelViewNorm, lightVec);
+		//float diffuse = lambert * (1.0 / (1.0 + (0.25 * distance * distance)));
+		vec4 colorToAdd = uLightCol[i];
+		color += colorToAdd;
 	}
 	
-	rtFragColor = vert;
+	rtFragColor = vec4(vec3(color),1.0);
 }
