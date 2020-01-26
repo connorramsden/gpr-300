@@ -45,7 +45,7 @@ uniform mat4 uMV; //Step 1
 uniform mat4 uP; //Step 4
 uniform mat4 uMV_nrm; //Step 7
 out vec4 viewPos; //Step 2
-out vec3 modelViewNorm; //Step 8
+out vec4 modelViewNorm; //Step 8
 
 void main()
 {

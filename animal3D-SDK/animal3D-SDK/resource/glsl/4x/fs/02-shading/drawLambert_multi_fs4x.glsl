@@ -33,10 +33,11 @@
 
 in vec4 modelViewNorm;
 in vec4 viewPos;
+in vec4 vTexCoord;
 
 out vec4 rtFragColor;
 
-uniform sampler2D uTex_dm;
+uniform mat4 uTex_dm;
 
 uniform int uLightCt; //light count
 uniform vec4 uLightPos[];
@@ -50,12 +51,13 @@ uniform float uLightSzInvSq[];
 //Used for help, but had to implement for animal3D, just helped me understand lambert model
 void main()
 {
-	vec4 vert = vec4(0.0);
+	vec4 vert = uTex_dm * vTexCoord;
 	
 	for(int i = 0; i < uLightCt; i++)
 	{
-		vec3 diffuse = dot(modelViewNorm, viewPos - uLightPos[i]);
-		vert *= diffuse;
+		//vec3 diffuse = dot(modelViewNorm, viewPos - uLightPos[i]);
+		//vert *= diffuse;
 	}
+	
 	rtFragColor = vert;
 }
