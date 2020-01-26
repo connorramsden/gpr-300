@@ -41,16 +41,23 @@
 
 layout (location = 0) in vec4 aPosition;
 layout (location = 2) in vec4 normal; //Step 6
+layout(location = 8) in vec4 aTexCoord; // Step 10
+
 uniform mat4 uMV; //Step 1
 uniform mat4 uP; //Step 4
 uniform mat4 uMV_nrm; //Step 7
+uniform mat4 uAtlas; // Step 10
+
 out vec4 viewPos; //Step 2
 out vec4 modelViewNorm; //Step 8
+
+out vec4 vTexCoord; // Step 10
 
 void main()
 {
 	// DUMMY OUTPUT: directly assign input position to output position
 	viewPos = uMV * aPosition; //Step 3
 	modelViewNorm = uMV_nrm * normal; //Step 9
+	vTexCoord = uAtlas * aTexCoord; 
 	gl_Position = uP * viewPos; //Step 5
 }

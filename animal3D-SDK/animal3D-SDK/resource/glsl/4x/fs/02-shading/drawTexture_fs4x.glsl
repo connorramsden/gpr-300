@@ -32,13 +32,13 @@
 
 in vec4 vTexCoord; // Step 2 - inbound texture coordinate
 
-uniform mat4 uTex_dm; // Step 1 - found in a3_DemoState_loading
+uniform sampler2D uTex_dm; // Step 1 - found in a3_DemoState_loading
 
 out vec4 rtFragColor;
 
 void main()
 {
-	vec4 sampleTex = uTex_dm * vTexCoord; // Step 3 - righthand mult to sample texture
+	vec4 vert = texture2D(uTex_dm, vec2(vTexCoord));
 	
-	rtFragColor = sampleTex; // Step 4 - assigning sample to output
+	rtFragColor = vert; // Step 4 - assigning sample to output
 }
