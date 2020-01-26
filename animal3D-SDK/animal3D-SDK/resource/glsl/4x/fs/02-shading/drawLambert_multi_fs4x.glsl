@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	drawLambert_multi_fs4x.glsl
 	Draw Lambert shading model for multiple lights.
 */
@@ -31,50 +31,71 @@
 //	4) implement Lambert shading model
 //	Note: test all data and inbound values before using them!
 
-in vec4 modelViewNorm;
-in vec4 viewPos;
-in vec4 vTexCoord;
+// Constants
+const int MAX_LIGHTS = 4; // Set equal to # of lights in scene
+// must have constant value to iterate over GLSL uniform arrays. 
+// https://www.khronos.org/opengl/wiki/Uniform_(GLSL)
 
+// Inputs
+in vec4 vModelViewNorm;			// Step 3
+in vec4 vViewPos;				// Step 3
+in vec4 vTexCoord;				// Step 3
+
+// Uniforms
+uniform sampler2D uTex_dm;		// Step 1
+uniform int uLightCt;			// light count
+uniform vec4 uColor;
+uniform vec4 uLightPos[MAX_LIGHTS];		// Step 2
+uniform vec4 uLightCol[MAX_LIGHTS];		// Step 2
+uniform float uLightSz[MAX_LIGHTS];		// Step 2
+uniform float uLightSzInvSq[MAX_LIGHTS];  // Step 2
+// idle renderer, 459
+
+// Outputs
 out vec4 rtFragColor;
 
-uniform sampler2D uTex_dm;
-
-uniform int uLightCt; //light count
-uniform vec4 uLightPos[];
-uniform vec4 uLightCol[];
-uniform float uLightSz[];
-uniform float uLightSzInvSq[];
-//idle renderer, 459
-
-
-//https://www.learnopengles.com/tag/lambertian-reflectance/
-//http://www.opengl-tutorial.org/beginners-tutorials/tutorial-8-basic-shading/
-//Used for help, but had to implement for animal3D, just helped me understand lambert model
+// https://www.learnopengles.com/tag/lambertian-reflectance/
+// http://www.opengl-tutorial.org/beginners-tutorials/tutorial-8-basic-shading/
+// Used for help, but had to implement for animal3D, just helped me understand lambert model
+// https://en.wikipedia.org/wiki/Lambertian_reflectance - helped with understanding the Lambertian diffuse calculation
 void main()
 {
-	vec4 vert = texture2D(uTex_dm, vec2(vTexCoord));
-	//https://stackoverflow.com/questions/41984724/calculating-angle-between-two-vectors-in-glsl
+	// https://stackoverflow.com/questions/41984724/calculating-angle-between-two-vectors-in-glsl
+	vec4 vert = texture2D(uTex_dm, vec2(vTexCoord)); // sample texture
 
-	//float angleTheta = clamp( dot(), 0,1);
-	
-	float lambert = 1.0;
-	float color = 0.0f;
-	for(int i = 0; i < uLightCt; i++)
-	{
-		//started phong by accident
-		//vec4 lightVec = uLightPos[i]-viewPos;
-		//vec4 lightVec_n = normalize(lightVec);
-		//vec4 diffuse = dot(modelViewNorm, lightVec_n) * uLightCol[i];
-		//vec4 reflection = (2 * dot(modelViewNorm, lightVec_n) * modelViewNorm) - lightVec_n;
-		//vec4 specular = viewPos - uLightPos[i];
+	vec4 color; // declare color variable
 
+	// Jake Lambert Attempt
+	/*
 		vec4 lightVec = normalize(uLightPos[i] - viewPos);
 		float distance = length(uLightPos[i] - viewPos);
 		lambert = dot(modelViewNorm, lightVec);
-		//float diffuse = lambert * (1.0 / (1.0 + (0.25 * distance * distance)));
+		float diffuse = lambert * (1.0 / (1.0 + (0.25 * distance * distance)));
 		vec4 colorToAdd = uLightCol[i];
 		color += colorToAdd;
+	*/
+
+	/*
+		Variable Naming Convention:
+		- L: The light-direction vector
+		- L_Hat: L but normalized
+		- N: Surface normal vector, incoming varying
+		- C: Surface color
+		- I_L: Intensity of light hitting the surface
+		- I_D: Intensity of diffusely reflected light
+	*/
+
+	// Connor Lambert Attempt
+	for (int i = 0; i < uLightCt; i++)
+	{
+		vec4 lightVec = uLightPos[i] - vViewPos; // calculate L
+		vec4 lightVecNorm = normalize(lightVec); // calculate L_Hat
+		float reflection = dot(lightVecNorm, vModelViewNorm); // Calculate L dot N, which is the reflection of light
+		vec4 diffuse = reflection * uColor; // Calculate I_D = L dot N * C * I_L
+		color = diffuse;
 	}
-	
-	rtFragColor = vec4(vec3(color),1.0);
+
+	vec4 output = color * vert;
+
+	rtFragColor = output;
 }

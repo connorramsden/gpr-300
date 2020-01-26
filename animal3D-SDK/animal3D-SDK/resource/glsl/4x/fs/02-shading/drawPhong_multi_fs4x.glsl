@@ -35,6 +35,15 @@ out vec4 rtFragColor;
 
 void main()
 {
+	// Jake Phong Attempt started phong by accident
+	/*
+		vec4 lightVec = uLightPos[i]-viewPos;
+		vec4 lightVec_n = normalize(lightVec);
+		vec4 diffuse = dot(modelViewNorm, lightVec_n) * uLightCol[i];
+		vec4 reflection = (2 * dot(modelViewNorm, lightVec_n) * modelViewNorm) - lightVec_n;
+		vec4 specular = viewPos - uLightPos[i];
+	*/
+
 	// DUMMY OUTPUT: all fragments are OPAQUE GREEN
 	rtFragColor = vec4(0.0, 1.0, 0.0, 1.0);
 }

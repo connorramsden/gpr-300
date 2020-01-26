@@ -38,7 +38,7 @@ out vec4 rtFragColor;
 
 void main()
 {
-	vec4 vert = texture2D(uTex_dm, vec2(vTexCoord));
+	vec4 vert = texture2D(uTex_dm, vec2(vTexCoord)); // Step 3 - sampling texture by casting texcoord to vec2
 	
 	rtFragColor = vert; // Step 4 - assigning sample to output
 }
