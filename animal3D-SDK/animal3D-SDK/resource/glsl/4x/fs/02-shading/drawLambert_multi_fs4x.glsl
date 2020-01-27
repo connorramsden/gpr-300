@@ -44,7 +44,6 @@ in vec4 vTexCoord;				// Step 3
 // Uniforms
 uniform sampler2D uTex_dm;		// Step 1
 uniform int uLightCt;			// light count
-uniform vec4 uColor;
 uniform vec4 uLightPos[MAX_LIGHTS];		// Step 2
 uniform vec4 uLightCol[MAX_LIGHTS];		// Step 2
 uniform float uLightSz[MAX_LIGHTS];		// Step 2
@@ -86,16 +85,19 @@ void main()
 	*/
 
 	// Connor Lambert Attempt
-	for (int i = 0; i < uLightCt; i++)
+	for (int i = 0; i < uLightCt; ++i)
 	{
 		vec4 lightVec = uLightPos[i] - vViewPos; // calculate L
 		vec4 lightVecNorm = normalize(lightVec); // calculate L_Hat
-		float reflection = dot(lightVecNorm, vModelViewNorm); // Calculate L dot N, which is the reflection of light
-		vec4 diffuse = reflection * uColor; // Calculate I_D = L dot N * C * I_L
+		float lambert = dot(lightVecNorm, vModelViewNorm); // Calculate L dot N, which is the reflection of light
+
+		vec4 surfaceColor = texture2D(uTex_dm, vec2(uLightPos[i]));
+
+		vec4 diffuse = lambert * surfaceColor; // Calculate I_D = L dot N * C * I_L
 		color = diffuse;
 	}
 
-	vec4 output = color * vert;
+	vec4 outCol = color * vert;
 
-	rtFragColor = output;
+	rtFragColor = outCol;
 }
