@@ -35,7 +35,7 @@
 
 // **WARNING: FOR TESTING/COMPARISON ONLY, DO NOT USE IN DELIVERABLE BUILDS**
 // uncomment this to allow shader decoding (if available)
-// #define A3_USER_ENABLE_SHADER_DECODING
+#define A3_USER_ENABLE_SHADER_DECODING
 
 
 //-----------------------------------------------------------------------------
@@ -440,19 +440,19 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 			// vs
 			// base
-			{ { { 0 },	"shdr-vs:passthru",					a3shader_vertex  ,	1,{ A3_DEMO_VS"passthru_vs4x.glsl" } } },
-			{ { { 0 },	"shdr-vs:passthru-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"passthru_transform_vs4x.glsl" } } },
-			{ { { 0 },	"shdr-vs:pass-col-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"passColor_transform_vs4x.glsl" } } },
-			{ { { 0 },	"shdr-vs:passthru-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"passthru_transform_instanced_vs4x.glsl" } } },
-			{ { { 0 },	"shdr-vs:pass-col-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"passColor_transform_instanced_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:passthru",					a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passthru_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:passthru-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passthru_transform_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:pass-col-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passColor_transform_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:passthru-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passthru_transform_instanced_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:pass-col-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passColor_transform_instanced_vs4x.glsl" } } },
 			// 02-shading
 			{ { { 0 },	"shdr-vs:pass-tex-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"02-shading/passTexcoord_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-light-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"02-shading/passLightingData_transform_vs4x.glsl" } } },
 
 			// fs
 			// base
-			{ { { 0 },	"shdr-fs:draw-col-unif",			a3shader_fragment,	1,{ A3_DEMO_FS"drawColorUnif_fs4x.glsl" } } },
-			{ { { 0 },	"shdr-fs:draw-col-attr",			a3shader_fragment,	1,{ A3_DEMO_FS"drawColorAttrib_fs4x.glsl" } } },
+			{ { { 0 },	"shdr-fs:draw-col-unif",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorUnif_fs4x.glsl" } } },
+			{ { { 0 },	"shdr-fs:draw-col-attr",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorAttrib_fs4x.glsl" } } },
 			// 02-shading
 			{ { { 0 },	"shdr-fs:draw-tex",					a3shader_fragment,	1,{ A3_DEMO_FS"02-shading/drawTexture_fs4x.glsl" } } },
 			{ { { 0 },	"shdr-fs:draw-Lambert-multi",		a3shader_fragment,	1,{ A3_DEMO_FS"02-shading/drawLambert_multi_fs4x.glsl" } } },
@@ -529,13 +529,13 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	
 	// ****TO-DO: 
 	//	-> 4.1b: Phong shading program initialization
-	/*
+	
 	// Phong shading program
 	currentDemoProg = demoState->prog_drawPhong_multi;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-multi");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_multi_fs->shader);
-	*/
+	
 	// ****TO-DO: 
 	//	-> 2.1b: nonphotorealistic shading program initialization
 	

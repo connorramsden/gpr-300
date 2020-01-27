@@ -59,45 +59,30 @@ out vec4 rtFragColor;
 // https://en.wikipedia.org/wiki/Lambertian_reflectance - helped with understanding the Lambertian diffuse calculation
 void main()
 {
-	// https://stackoverflow.com/questions/41984724/calculating-angle-between-two-vectors-in-glsl
-	vec4 vert = texture2D(uTex_dm, vec2(vTexCoord)); // sample texture
-
-	vec4 color; // declare color variable
+	vec4 outTex = texture2D(uTex_dm, vec2(vTexCoord)); // sample incoming texture
 
 	// Jake Lambert Attempt
-	/*
-		vec4 lightVec = normalize(uLightPos[i] - viewPos);
-		float distance = length(uLightPos[i] - viewPos);
-		lambert = dot(modelViewNorm, lightVec);
-		float diffuse = lambert * (1.0 / (1.0 + (0.25 * distance * distance)));
-		vec4 colorToAdd = uLightCol[i];
-		color += colorToAdd;
-	*/
+	// vec4 lightVec = normalize(uLightPos[i] - viewPos);
+	// float distance = length(uLightPos[i] - viewPos);
+	// lambert = dot(modelViewNorm, lightVec);
+	// float diffuse = lambert * (1.0 / (1.0 + (0.25 * distance * distance)));
+	// vec4 colorToAdd = uLightCol[i];
+	// color += colorToAdd;
 
-	/*
-		Variable Naming Convention:
-		- L: The light-direction vector
-		- L_Hat: L but normalized
-		- N: Surface normal vector, incoming varying
-		- C: Surface color
-		- I_L: Intensity of light hitting the surface
-		- I_D: Intensity of diffusely reflected light
-	*/
+	vec4 sumCol;
 
-	// Connor Lambert Attempt
-	for (int i = 0; i < uLightCt; ++i)
+	for(int i = 0; i < uLightCt; ++i) 
 	{
-		vec4 lightVec = uLightPos[i] - vViewPos; // calculate L
-		vec4 lightVecNorm = normalize(lightVec); // calculate L_Hat
-		float lambert = dot(vModelViewNorm, lightVecNorm); // Calculate L dot N, which is the reflection of light
+		// Need to acquire POINT (is it vTexCoord??)
+		vec4 lightVec = uLightPos[i] - vTexCoord; // Calculate the light vector
+		vec4 lightVec_n = normalize(lightVec); // Normalize the light vector
+		// Need to calculate SURFACE NORMAL
+		float diffuse = dot(outTex, lightVec_n); // Calculate the diffuse
 
-		vec4 surfaceColor = texture2D(uTex_dm, vec2(uLightPos[i]));
-
-		vec4 diffuse = lambert * surfaceColor; // Calculate I_D = L dot N * C * I_L
-		color += diffuse * vert;
+		sumCol += diffuse;
 	}
 
-	vec4 outCol = clamp(color * vert, 0,1);
+	vec4 outCol = clamp(sumCol * outTex, 0, 1);
 
 	rtFragColor = outCol;
 }

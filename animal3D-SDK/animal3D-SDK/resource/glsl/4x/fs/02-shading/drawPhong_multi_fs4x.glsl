@@ -31,10 +31,26 @@
 //	4) implement Phong shading model
 //	Note: test all data and inbound values before using them!
 
+// Constants
+const int MAX_LIGHTS = 4;
+
+// Inputs
+in vec4 vModelViewNorm;
+in vec4 vViewPos;
+in vec4 vTexCoord;
+
+uniform sampler2D uTex_dm; // Step 1
+uniform sampler2D uTex_sm; // Step 1
+uniform int uLightCt;
+uniform vec4 uLightPos[MAX_LIGHTS];
+
 out vec4 rtFragColor;
 
 void main()
 {
+	vec4 outTexDm = texture2D(uTex_dm, vec2(vTexCoord));
+	vec4 outTexSm = texture2D(uTex_sm, vec2(vTexCoord));
+
 	// Jake Phong Attempt started phong by accident
 	/*
 		vec4 lightVec = uLightPos[i]-viewPos;
@@ -44,6 +60,12 @@ void main()
 		vec4 specular = viewPos - uLightPos[i];
 	*/
 
+	for(int i = 0; i < uLightCt; ++i) 
+	{
+		vec4 lightVec = uLightPos[i] - vViewPos;
+		vec4 lightVecNorm = normalize(lightVec);
+	}
+
 	// DUMMY OUTPUT: all fragments are OPAQUE GREEN
-	rtFragColor = vec4(0.0, 1.0, 0.0, 1.0);
+	rtFragColor = outTexDm + outTexSm;
 }
