@@ -89,15 +89,15 @@ void main()
 	{
 		vec4 lightVec = uLightPos[i] - vViewPos; // calculate L
 		vec4 lightVecNorm = normalize(lightVec); // calculate L_Hat
-		float lambert = dot(lightVecNorm, vModelViewNorm); // Calculate L dot N, which is the reflection of light
+		float lambert = dot(vModelViewNorm, lightVecNorm); // Calculate L dot N, which is the reflection of light
 
 		vec4 surfaceColor = texture2D(uTex_dm, vec2(uLightPos[i]));
 
 		vec4 diffuse = lambert * surfaceColor; // Calculate I_D = L dot N * C * I_L
-		color = diffuse;
+		color += diffuse * vert;
 	}
 
-	vec4 outCol = color * vert;
+	vec4 outCol = clamp(color * vert, 0,1);
 
 	rtFragColor = outCol;
 }
