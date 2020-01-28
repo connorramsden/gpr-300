@@ -87,8 +87,8 @@ void main()
 		vec4 diffuse = getDiffuseCoeff(surfaceNorm, lightNorm) * texDiffuse;
 
 		// Specular calculation found on DBuckstein SlideDeck2 pg. 14
-		float specularCoeff = max(0.0, dot(normalize(vViewPos), reflection));
-		vec4 specular = specularCoeff * specularCoeff * texSpecular;
+		float specularCoeff = max(0.0, dot(-normalize(vViewPos), reflection));
+		vec4 specular = pow(specularCoeff, 128) * texSpecular;
 
 		phong += (diffuse + specular) * uLightCol[i];
 	}
