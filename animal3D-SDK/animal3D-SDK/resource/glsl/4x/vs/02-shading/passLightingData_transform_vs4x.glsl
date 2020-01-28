@@ -37,11 +37,25 @@
 //	9) correctly transform input normal by MV normal matrix
 //	10+) see instructions in passTexcoord...vs4x.glsl for information on 
 //		how to handle the texture coordinate
+// UNIFORMS: demostate_loading : 363
 
 layout (location = 0) in vec4 aPosition;
+layout (location = 2) in vec4 normal; //Step 6
+layout(location = 8) in vec4 aTexCoord; // Step 10
+
+uniform mat4 uMV; //Step 1
+uniform mat4 uP; //Step 4
+uniform mat4 uMV_nrm; //Step 7
+uniform mat4 uAtlas; // Step 10
+
+out vec4 vViewPos; //Step 2
+out vec4 vModelViewNorm; //Step 8
+out vec4 vTexCoord; // Step 10
 
 void main()
 {
-	// DUMMY OUTPUT: directly assign input position to output position
-	gl_Position = aPosition;
+	vViewPos = uMV * aPosition; //Step 3
+	vModelViewNorm = uMV_nrm * normal; //Step 9
+	vTexCoord = uAtlas * aTexCoord;
+	gl_Position = uP * vViewPos; //Step 5
 }

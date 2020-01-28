@@ -30,10 +30,15 @@
 //	3) sample texture using texture coordinate
 //	4) assign sample to output color
 
+in vec4 vTexCoord; // Step 2 - inbound texture coordinate
+
+uniform sampler2D uTex_dm; // Step 1 - found in a3_DemoState_loading
+
 out vec4 rtFragColor;
 
 void main()
 {
-	// DUMMY OUTPUT: all fragments are OPAQUE WHITE
-	rtFragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	vec4 vert = texture2D(uTex_dm, vec2(vTexCoord)); // Step 3 - sampling texture by casting texcoord to vec2
+	
+	rtFragColor = vert; // Step 4 - assigning sample to output
 }
