@@ -37,21 +37,25 @@ const int MAX_LIGHTS = 4; // Set equal to # of lights in scene
 // https://www.khronos.org/opengl/wiki/Uniform_(GLSL)
 
 // Inputs
-in vec4 vModelViewNorm;			// Step 3
-in vec4 vViewPos;				// Step 3
-in vec4 vTexCoord;				// Step 3
+in vec4 vModelViewNorm;					  // Step 3
+in vec4 vViewPos;						  // Step 3
+in vec4 vTexCoord;						  // Step 3
 
 // Uniforms
-uniform sampler2D uTex_dm;		// Step 1
-uniform int uLightCt;			// light count
-uniform vec4 uLightPos[MAX_LIGHTS];		// Step 2
-uniform vec4 uLightCol[MAX_LIGHTS];		// Step 2
-uniform float uLightSz[MAX_LIGHTS];		// Step 2
+uniform sampler2D uTex_dm;		          // Step 1
+uniform int uLightCt;			          // light count
+uniform vec4 uLightPos[MAX_LIGHTS];		  // Step 2
+uniform vec4 uLightCol[MAX_LIGHTS];		  // Step 2
+uniform float uLightSz[MAX_LIGHTS];		  // Step 2
 uniform float uLightSzInvSq[MAX_LIGHTS];  // Step 2
 // idle renderer, 459
 
 // Outputs
 out vec4 rtFragColor;
+
+// Forward Decl. Functions
+vec4 getNormalizedLight(vec4 lightPos, vec4 objPos);
+float getDiffuseCoeff(vec4 surfaceNorm, vec4 lightNorm);
 
 // https://www.learnopengles.com/tag/lambertian-reflectance/
 // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-8-basic-shading/
@@ -59,8 +63,6 @@ out vec4 rtFragColor;
 // https://en.wikipedia.org/wiki/Lambertian_reflectance - helped with understanding the Lambertian diffuse calculation
 void main()
 {
-	vec4 outTex = texture2D(uTex_dm, vec2(vTexCoord)); // sample incoming texture
-
 	// Jake Lambert Attempt
 	// vec4 lightVec = normalize(uLightPos[i] - viewPos);
 	// float distance = length(uLightPos[i] - viewPos);
@@ -69,20 +71,42 @@ void main()
 	// vec4 colorToAdd = uLightCol[i];
 	// color += colorToAdd;
 
+	// Combined Connor & Jake Attempt
+	// sample incoming texture
+	vec4 texDiffuse = texture(uTex_dm, vec2(vTexCoord));
+	
+	// Initialize output color
 	vec4 sumCol;
 
-	for(int i = 0; i < uLightCt; ++i) 
+	for (int i = 0; i < uLightCt; ++i)
 	{
-		// Need to acquire POINT (is it vTexCoord??)
-		vec4 lightVec = uLightPos[i] - vTexCoord; // Calculate the light vector
-		vec4 lightVec_n = normalize(lightVec); // Normalize the light vector
-		// Need to calculate SURFACE NORMAL
-		float diffuse = dot(outTex, lightVec_n); // Calculate the diffuse
+		// Light source - Surface Point (DBuckstein slides on Lighting & Shading 10 & 11)
+		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPos);
+		// Need to normalize view model norm to get surface normal
+		vec4 surfaceNorm = normalize(vModelViewNorm);
 
-		sumCol += diffuse;
+		// Calculate diffuse (dot product), clamp diffuse and apply texturing
+		float diffuse = getDiffuseCoeff(surfaceNorm, lightNorm);
+		vec4 lambert = diffuse * texDiffuse;
+
+		// Add lambertian reflection and reflected surface color
+		sumCol += lambert * uLightCol[i];
 	}
 
-	vec4 outCol = clamp(sumCol * outTex, 0, 1);
+	// Output calculated sum of colors
+	rtFragColor = sumCol;
+}
 
-	rtFragColor = outCol;
+// Returns normalized light vector (L_hat)
+vec4 getNormalizedLight(vec4 lightPos, vec4 objPos)
+{
+	vec4 lightVec = lightPos - objPos;
+	return normalize(lightVec);
+}
+
+// Returns the clamped dot product of the passed normal and light vector
+// Make sure to pass normalized values in
+float getDiffuseCoeff(vec4 surfaceNorm, vec4 lightNorm)
+{
+	return max(0.0, dot(surfaceNorm, lightNorm));
 }
