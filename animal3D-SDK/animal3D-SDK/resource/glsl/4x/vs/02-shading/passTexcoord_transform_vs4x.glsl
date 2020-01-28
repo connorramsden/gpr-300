@@ -39,10 +39,10 @@ layout(location = 8) in vec4 aTexCoord; // Step 3 - take in texture coordinate i
 uniform mat4 uMVP; // Step 1 - found in a3_DemoState_loading
 uniform mat4 uAtlas; // Step 4 - found in a3_DemoState_loading
 
-out vec4 vTexCoord; // Step 5 - outbound texture to be read into fragment shader
+out vec2 vTexCoord; // Step 5 - outbound texture to be read into fragment shader
 
 void main()
 {
 	gl_Position = uMVP * aPosition; // Step 2 - properly transform input position
-	vTexCoord = uAtlas * aTexCoord; // Step 6 - transform texture coordinates by atlas matrix
+	vTexCoord = vec2(uAtlas * aTexCoord); // Step 6 - transform texture coordinates by atlas matrix
 }

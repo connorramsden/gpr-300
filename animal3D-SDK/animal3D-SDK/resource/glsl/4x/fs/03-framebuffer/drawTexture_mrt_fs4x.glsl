@@ -31,7 +31,7 @@
 //	4) assign sample to output render target (location 0)
 //	5) declare new render target (location 3) and output texcoord
 
-in vec2 vTexcoord;
+in vec2 vTexCoord;
 
 uniform sampler2D uTex_dm;
 
@@ -45,9 +45,9 @@ layout (location = 3) out vec4 rtTexcoord;
 void main()
 {
 	// lab 2
-	vec4 texDm = texture(uTex_dm, vTexcoord);
+	vec4 texDm = texture(uTex_dm, vTexCoord);
 	rtFragColor = texDm;
 
 	// Lab 3
-	rtTexcoord = vec4(vTexcoord, 0.0, 1.0);
+	rtTexcoord = vec4(vTexCoord, 0.0, 1.0);
 }
