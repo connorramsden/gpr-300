@@ -31,10 +31,23 @@
 //	4) assign sample to output render target (location 0)
 //	5) declare new render target (location 3) and output texcoord
 
-out vec4 rtFragColor;
+in vec2 vTexcoord;
+
+uniform sampler2D uTex_dm;
+
+// lab 2
+// out vec4 rtFragColor;
+
+// lab 3
+layout (location = 0) out vec4 rtFragColor;
+layout (location = 3) out vec4 rtTexcoord;
 
 void main()
 {
-	// DUMMY OUTPUT: all fragments are OPAQUE WHITE
-	rtFragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	// lab 2
+	vec4 texDm = texture(uTex_dm, vTexcoord);
+	rtFragColor = texDm;
+
+	// Lab 3
+	rtTexcoord = vec4(vTexcoord, 0.0, 1.0);
 }
