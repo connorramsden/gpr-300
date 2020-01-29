@@ -46,8 +46,8 @@ void main()
 {
 	// lab 2
 	vec4 texDm = texture(uTex_dm, vTexCoord);
-	rtFragColor = texDm;
+	rtFragColor = texDm; // Sample texture to Final Color Render Target
 
 	// Lab 3
-	rtTexcoord = vec4(vTexCoord, 0.0, 1.0);
+	rtTexcoord = vec4(vTexCoord, 0.0, 1.0); // Pass texture coords to Texture Coordinate RT
 }

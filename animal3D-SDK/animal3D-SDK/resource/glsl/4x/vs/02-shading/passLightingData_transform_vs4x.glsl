@@ -50,12 +50,12 @@ uniform mat4 uAtlas; // Step 10
 
 out vec4 vViewPos; //Step 2
 out vec4 vModelViewNorm; //Step 8
-out vec4 vTexCoord; // Step 10
+out vec2 vTexCoord; // Step 10
 
 void main()
 {
 	vViewPos = uMV * aPosition; //Step 3
 	vModelViewNorm = uMV_nrm * normal; //Step 9
-	vTexCoord = uAtlas * aTexCoord;
+	vTexCoord = vec2(uAtlas * aTexCoord);
 	gl_Position = uP * vViewPos; //Step 5
 }
