@@ -88,7 +88,10 @@ void main()
 
 		// Specular calculation found on DBuckstein SlideDeck2 pg. 14
 		float specularCoeff = max(0.0, dot(-normalize(vViewPos), reflection));
-		vec4 specular = pow(specularCoeff, 128) * texSpecular;
+		specularCoeff *= specularCoeff; // sC^2
+		specularCoeff *= specularCoeff; // sC^4
+		specularCoeff *= specularCoeff; // sC^8
+		vec4 specular = specularCoeff * texSpecular;
 
 		phong += (diffuse + specular) * uLightCol[i];
 	}
