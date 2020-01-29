@@ -49,8 +49,8 @@ layout (location = 0) out vec4 rtFragColor;
 layout (location = 1) out vec4 rtViewPos;
 layout (location = 2) out vec4 rtViewNormal;
 layout (location = 3) out vec4 rtTexCoord;
-layout(location = 4) out vec4 rtDiffuseMap;
-layout(location = 6) out vec4 rtDiffuseLightTotal;
+layout (location = 4) out vec4 rtDiffuseMap;
+layout (location = 6) out vec4 rtDiffuseLightTotal;
 
 vec4 getNormalizedLight(vec4 lightPos, vec4 objPos);
 float getDiffuseCoeff(vec4 surfaceNorm, vec4 lightNorm);

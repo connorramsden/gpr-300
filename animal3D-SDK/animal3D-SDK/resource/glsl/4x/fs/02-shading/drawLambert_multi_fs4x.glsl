@@ -39,7 +39,7 @@ const int MAX_LIGHTS = 4; // Set equal to # of lights in scene
 // Inputs
 in vec4 vModelViewNorm;					  // Step 3
 in vec4 vViewPos;						  // Step 3
-in vec4 vTexCoord;						  // Step 3
+in vec2 vTexCoord;						  // Step 3
 
 // Uniforms
 uniform sampler2D uTex_dm;		          // Step 1
@@ -73,7 +73,7 @@ void main()
 
 	// Combined Connor & Jake Attempt
 	// sample incoming texture
-	vec4 texDiffuse = texture(uTex_dm, vec2(vTexCoord));
+	vec4 texDiffuse = texture(uTex_dm, vTexCoord);
 	
 	// Initialize output color
 	vec4 sumCol;

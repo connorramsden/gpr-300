@@ -39,7 +39,7 @@ const int MAX_LIGHTS = 4; // Set equal to # of lights in scene
 // Inputs
 in vec4 vModelViewNorm;	// Step 3
 in vec4 vViewPos;		// Step 3
-in vec4 vTexCoord;		// Step 3
+in vec2 vTexCoord;		// Step 3
 
 uniform sampler2D uTex_dm;	// Step 1
 uniform sampler2D uTex_sm;	// Step 1
