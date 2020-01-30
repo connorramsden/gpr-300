@@ -58,8 +58,8 @@ float getDiffuseCoeff(vec4 normal, vec4 lightVector);
 
 void main()
 {
-	vec4 texDiffuse = texture2D(uTex_dm, vec2(vTexCoord));
-	vec4 texSpecular = texture2D(uTex_sm, vec2(vTexCoord));
+	vec4 texDiffuse = texture2D(uTex_dm, vTexCoord);
+	vec4 texSpecular = texture2D(uTex_sm, vTexCoord);
 
 	// Jake Phong Attempt started phong by accident
 	/*

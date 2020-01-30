@@ -40,7 +40,7 @@ uniform sampler2D uTex_dm;
 
 // lab 3
 layout (location = 0) out vec4 rtFragColor;
-layout (location = 3) out vec4 rtTexcoord;
+layout (location = 3) out vec4 rtTexCoord;
 
 void main()
 {
@@ -49,5 +49,5 @@ void main()
 	rtFragColor = texDm; // Sample texture to Final Color Render Target
 
 	// Lab 3
-	rtTexcoord = vec4(vTexCoord, 0.0, 1.0); // Pass texture coords to Texture Coordinate RT
+	rtTexCoord = vec4(vTexCoord, 0.0, 1.0); // Pass texture coords to Texture Coordinate RT
 }
