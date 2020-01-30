@@ -100,14 +100,14 @@ void main()
 	}
 
 	// DUMMY OUTPUT: all fragments are OPAQUE GREEN
-	rtFragColor = phong;
-	rtViewPos = vViewPos;
-	rtViewNormal = vModelViewNorm;
-	rtTexCoord = vec4(vTexCoord, 0.0, 1.0);
-	rtDiffuseMap = texDiffuse;
-	rtSpecularMap = texSpecular;
-	rtDiffuseLightTotal = diffuseTotal;
-	rtSpecularLightTotal = specularTotal;
+	rtFragColor = vec4(phong.xyz, 1.0);
+	rtViewPos = vec4(vViewPos.xyz, 1.0);
+	rtViewNormal = vec4(vModelViewNorm.xyz, 1.0);
+	rtTexCoord = vec4(vTexCoord, 1.0, 1.0);
+	rtDiffuseMap = vec4(texDiffuse.xyz, 1.0);
+	rtSpecularMap = vec4(texSpecular.xyz, 1.0);
+	rtDiffuseLightTotal = vec4(diffuseTotal.xyz, 1.0);
+	rtSpecularLightTotal = vec4(specularTotal.xyz, 1.0);
 
 	/*
 		// Pseudo-code

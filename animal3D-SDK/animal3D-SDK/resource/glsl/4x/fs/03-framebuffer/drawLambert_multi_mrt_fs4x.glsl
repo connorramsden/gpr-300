@@ -75,12 +75,12 @@ void main()
 	}
 
 	// Assign all Render Targets
-	rtFragColor = outCol;
-	rtViewPos = vViewPos;
-	rtViewNormal = vModelViewNorm;
+	rtFragColor = vec4(outCol.xyz, 1.0);
+	rtViewPos = vec4(vViewPos.xyz, 1.0);
+	rtViewNormal = vec4(vModelViewNorm.xyz, 1.0) ;
 	rtTexCoord = vec4(vTexCoord, 0.0, 1.0);
-	rtDiffuseMap = texDiffuse;
-	rtDiffuseLightTotal = lightingTotal;
+	rtDiffuseMap = vec4(texDiffuse.xyz, 1.0);
+	rtDiffuseLightTotal = vec4(lightingTotal.xyz, 1.0);
 }
 
 // Returns normalized light vector (L_hat)
