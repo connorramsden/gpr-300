@@ -61,17 +61,20 @@ void main()
 
 	vec4 outCol;
 	vec4 lightingTotal;
+	
+	vec4 surfaceNorm = normalize(vModelViewNorm);
 
 	vec4 surfaceNorm = normalize(vModelViewNorm);
 
 	for (int i = 0; i < uLightCt; ++i) {
 		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPos);
-		
+
 		float diffuse = getDiffuseCoeff(surfaceNorm, lightNorm);
 
 		lightingTotal += diffuse;
 
 		vec4 lambert = diffuse * texDiffuse;
+
 		outCol += lambert * uLightCol[i];
 	}
 
