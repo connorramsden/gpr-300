@@ -35,12 +35,12 @@ out vec4 rtFragColor;
 in vec2 vTexCoord;
 
 uniform sampler2D uTex_dm;
-uniform float uTime;
+uniform double uTime;
 
 void main()
 {
 	vec4 fragColor = texture(uTex_dm, vTexCoord);
-	fragColor.xyz = fragColor.xyz * vec3(clamp(abs(sin(uTime)), 0, 1));
+	fragColor.xyz = fragColor.xyz * vec3(clamp(abs(sin(float(uTime))), 0, 1));
 	//fragColor.xyz = clamp(fragColor.xyz * 0.5, 0, 1);
 	rtFragColor = fragColor;
 }
