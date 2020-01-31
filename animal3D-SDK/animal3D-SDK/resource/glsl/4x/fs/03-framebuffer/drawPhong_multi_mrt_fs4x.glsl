@@ -69,9 +69,10 @@ void main()
 	vec4 diffuseTotal;
 	vec4 specularTotal;
 
+	vec4 surfaceNorm = normalize(vModelViewNorm);
+
 	for (int i = 0; i < uLightCt; ++i) {
-		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPos);
-		vec4 surfaceNorm = normalize(vModelViewNorm);
+		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPos);		
 
 		// Calculate diffuse coefficient
 		float diffuse = getDiffuseCoeff(surfaceNorm, lightNorm);
@@ -87,9 +88,12 @@ void main()
 		// Calculate initial specular coefficient
 		float specularCoeff = max(0.0, dot(-normalize(vViewPos), reflection));
 		// Exponentially increase specular coefficient
-		specularCoeff *= specularCoeff;
-		specularCoeff *= specularCoeff;
-		specularCoeff *= specularCoeff;
+		specularCoeff *= specularCoeff; // ks^2
+		specularCoeff *= specularCoeff; // ks^4
+		specularCoeff *= specularCoeff; // ks^8
+		specularCoeff *= specularCoeff; // ks^16
+		specularCoeff *= specularCoeff; // ks^32
+		specularCoeff *= specularCoeff; // ks^64
 
 		// Assign specular total to specular coefficient
 		specularTotal += specularCoeff;
@@ -99,11 +103,10 @@ void main()
 		phong += (lambert + specular) * uLightCol[i];
 	}
 
-	// DUMMY OUTPUT: all fragments are OPAQUE GREEN
 	rtFragColor = vec4(phong.xyz, 1.0);
 	rtViewPos = vec4(vViewPos.xyz, 1.0);
-	rtViewNormal = vec4(vModelViewNorm.xyz, 1.0);
-	rtTexCoord = vec4(vTexCoord, 1.0, 1.0);
+	rtViewNormal = vec4(surfaceNorm.xyz, 1.0);
+	rtTexCoord = vec4(vTexCoord, 0.0, 1.0);
 	rtDiffuseMap = vec4(texDiffuse.xyz, 1.0);
 	rtSpecularMap = vec4(texSpecular.xyz, 1.0);
 	rtDiffuseLightTotal = vec4(diffuseTotal.xyz, 1.0);
