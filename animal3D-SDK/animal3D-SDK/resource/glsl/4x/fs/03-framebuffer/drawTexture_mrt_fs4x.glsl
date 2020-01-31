@@ -31,23 +31,35 @@
 //	4) assign sample to output render target (location 0)
 //	5) declare new render target (location 3) and output texcoord
 
+in vec4 vModelViewNorm;
+in vec4 vViewPos;
 in vec2 vTexCoord;
 
 uniform sampler2D uTex_dm;
 
-// lab 2
-// out vec4 rtFragColor;
-
 // lab 3
-layout (location = 0) out vec4 rtFragColor;
-layout (location = 3) out vec4 rtTexCoord;
+layout(location = 0) out vec4 rtFragColor;
+layout(location = 1) out vec4 rtViewPos;
+layout(location = 2) out vec4 rtViewNormal;
+layout(location = 3) out vec4 rtTexCoord;
+layout(location = 4) out vec4 rtDiffuseMap;
+layout(location = 5) out vec4 rtSpecularMap;
+layout(location = 6) out vec4 rtDiffuseLightTotal;
+layout(location = 7) out vec4 rtSpecularLightTotal;
 
 void main()
 {
 	// lab 2
-	vec4 texDm = texture(uTex_dm, vTexCoord);
-	rtFragColor = texDm; // Sample texture to Final Color Render Target
+	vec4 texDiffuse = texture(uTex_dm, vTexCoord);
+	vec4 surfaceNorm = normalize(vModelViewNorm);
+	
+	rtFragColor = texDiffuse; // Sample texture to Final Color Render Target
+	rtViewPos = vec4(vViewPos.xyz, 1.0);
+	rtViewNormal = vec4(surfaceNorm.xyz, 1.0) ;
+	rtTexCoord = vec4(vTexCoord, 0.0, 1.0);
+	rtDiffuseMap = vec4(texDiffuse.xyz, 1.0);
+	//rtDiffuseLightTotal = vec4(0.0, 0.0, 0.0, 1.0); //blank (black) for this mode
+	//rtSpecularMap = vec4(0.0, 0.0, 0.0, 1.0);
+	//rtSpecularLightTotal = vec4(0.0, 0.0, 0.0, 1.0); //blank (black) for this mode
 
-	// Lab 3
-	rtTexCoord = vec4(vTexCoord, 0.0, 1.0); // Pass texture coords to Texture Coordinate RT
 }
