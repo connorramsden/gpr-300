@@ -22,7 +22,7 @@
 	Draw nonphotorealistic shading model for multiple lights with MRT output.
 */
 
-#version 410
+
 
 // ****TO-DO: 
 //	1) declare uniform variables for textures; see demo code for hints
@@ -33,8 +33,8 @@
 //	5) set location of final color render target (location 0)
 //	6) declare render targets for each attribute and shading component
 
+#version 410
 const int MAX_LIGHTS = 4;
-
 in vec4 vModelViewNorm;
 in vec4 vViewPos;
 in vec2 vTexCoord;

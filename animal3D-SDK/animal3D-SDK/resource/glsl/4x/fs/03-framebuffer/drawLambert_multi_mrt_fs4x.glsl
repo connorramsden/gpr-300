@@ -64,8 +64,6 @@ void main()
 	
 	vec4 surfaceNorm = normalize(vModelViewNorm);
 
-	vec4 surfaceNorm = normalize(vModelViewNorm);
-
 	for (int i = 0; i < uLightCt; ++i) {
 		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPos);
 
