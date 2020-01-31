@@ -61,15 +61,15 @@ void main()
 
 	vec4 outCol;
 	vec4 lightingTotal;
+	
+	vec4 surfaceNorm = normalize(vModelViewNorm);
 
 	for (int i = 0; i < uLightCt; ++i) {
 		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPos);
-		vec4 surfaceNorm = normalize(vModelViewNorm);
 
 		float diffuse = getDiffuseCoeff(surfaceNorm, lightNorm);
 		lightingTotal += diffuse;
 		vec4 lambert = diffuse * texDiffuse;
-
 
 		outCol += lambert * uLightCol[i];
 	}
@@ -77,7 +77,7 @@ void main()
 	// Assign all Render Targets
 	rtFragColor = vec4(outCol.xyz, 1.0);
 	rtViewPos = vec4(vViewPos.xyz, 1.0);
-	rtViewNormal = vec4(vModelViewNorm.xyz, 1.0) ;
+	rtViewNormal = vec4(surfaceNorm.xyz, 1.0) ;
 	rtTexCoord = vec4(vTexCoord, 0.0, 1.0);
 	rtDiffuseMap = vec4(texDiffuse.xyz, 1.0);
 	rtDiffuseLightTotal = vec4(lightingTotal.xyz, 1.0);
