@@ -40,15 +40,18 @@ uniform mat4 uMV; //Step 1
 uniform mat4 uP; //Step 4
 uniform mat4 uMV_nrm; //Step 7
 uniform mat4 uAtlas; // Step 10
+uniform mat4 uMVPB;
 
 out vec4 vViewPos; //Step 2
 out vec4 vModelViewNorm; //Step 8
 out vec2 vTexCoord; // Step 10
+out vec4 vShadowCoord;
 
 void main()
 {
-	vViewPos = uMV * aPosition; //Step 3
-	vModelViewNorm = uMV_nrm * normal; //Step 9
+	vViewPos = uMV * aPosition; 
+	vModelViewNorm = uMV_nrm * normal;
 	vTexCoord = vec2(uAtlas * aTexCoord);
-	gl_Position = uP * vViewPos; //Step 5
+	vShadowCoord = uMVPB * aPosition;
+	gl_Position = uP * vViewPos; 
 }
