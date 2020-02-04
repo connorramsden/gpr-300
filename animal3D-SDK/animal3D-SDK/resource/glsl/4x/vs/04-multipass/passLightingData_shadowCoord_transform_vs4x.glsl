@@ -33,7 +33,7 @@
 //	3) calculate and pass shadow coordinate
 
 layout(location = 0) in vec4 aPosition;
-layout(location = 2) in vec4 normal; //Step 6
+layout(location = 2) in vec4 normal; // Step 6
 layout(location = 8) in vec4 aTexCoord; // Step 10
 
 uniform mat4 uMV; //Step 1
@@ -52,6 +52,6 @@ void main()
 	vViewPos = uMV * aPosition; 
 	vModelViewNorm = uMV_nrm * normal;
 	vTexCoord = vec2(uAtlas * aTexCoord);
+	gl_Position = uP * vViewPos;	
 	vShadowCoord = uMVPB * aPosition;
-	gl_Position = uP * vViewPos; 
 }
