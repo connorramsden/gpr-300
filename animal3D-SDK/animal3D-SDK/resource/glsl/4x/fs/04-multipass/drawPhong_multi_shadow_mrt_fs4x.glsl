@@ -108,8 +108,8 @@ void main()
 	// Found on DBuckstein Slide Deck 4, pg. 13
 	vec4 shadowScreen = vShadowCoord / vShadowCoord.w; // Step 2 - perspective divide
 
-	// rtFragColor = vec4(phong.xyz, 1.0);
-	rtFragColor = texture2D(uTex_shadow, shadowScreen.xy);
+	 rtFragColor = vec4(phong.xyz, 1.0);
+	//rtFragColor = texture2D(uTex_shadow, shadowScreen.xy);
 	rtViewPos = vec4(vViewPos.xyz, 1.0);
 	rtViewNormal = vec4(surfaceNorm.xyz, 1.0);
 	rtTexCoord = vec4(vTexCoord, 0.0, 1.0);
