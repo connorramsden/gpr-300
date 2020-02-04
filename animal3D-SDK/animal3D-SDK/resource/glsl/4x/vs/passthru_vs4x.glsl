@@ -17,14 +17,14 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	passthru_vs4x.glsl
 	Pass-thru GLSL vertex shader. Outputs raw position attribute.
 */
 
 #version 410
 
-layout (location = 0) in vec4 aPosition;
+layout(location = 0) in vec4 aPosition;
 
 void main()
 {

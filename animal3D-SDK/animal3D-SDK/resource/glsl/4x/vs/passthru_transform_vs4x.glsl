@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	passthru_transform_vs4x.glsl
 	Pass-thru GLSL vertex shader. Outputs transformed position attribute.
 */
@@ -28,10 +28,11 @@
 //	1) declare uniform variable for MVP matrix; see demo code for hint
 //	2) correctly transform input position by MVP matrix
 
-layout (location = 0) in vec4 aPosition;
+layout(location = 0) in vec4 aPosition;
+uniform mat4 uMVP; //Step 1
 
 void main()
 {
 	// DUMMY OUTPUT: directly assign input position to output position
-	gl_Position = aPosition;
+	gl_Position = uMVP * aPosition; //Step 2
 }

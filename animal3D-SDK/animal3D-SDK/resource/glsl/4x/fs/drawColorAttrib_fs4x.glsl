@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	drawColorAttrib_fs4x.glsl
 	Draw color attribute passed from prior stage as varying.
 */
@@ -28,10 +28,11 @@
 //	1) declare varying to receive input vertex color from vertex shader
 //	2) assign vertex color to output color
 
+in vec4 vColor;
 out vec4 rtFragColor;
 
 void main()
 {
 	// DUMMY OUTPUT: all fragments are OPAQUE RED
-	rtFragColor = vec4(1.0, 0.0, 0.0, 1.0);
+	rtFragColor = vColor;
 }

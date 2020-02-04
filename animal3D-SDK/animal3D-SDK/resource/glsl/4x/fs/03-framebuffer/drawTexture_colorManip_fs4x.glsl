@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	drawTexture_colorManip_fs4x.glsl
 	Draw texture sample and manipulate result.
 */
@@ -32,9 +32,15 @@
 //	5) assign modified sample to output color
 
 out vec4 rtFragColor;
+in vec2 vTexCoord;
+
+uniform sampler2D uTex_dm;
+uniform double uTime;
 
 void main()
 {
-	// DUMMY OUTPUT: all fragments are OPAQUE LIGHT GREY
-	rtFragColor = vec4(0.5, 0.5, 0.5, 1.0);
+	vec4 fragColor = texture(uTex_dm, vTexCoord);
+	fragColor.xyz = fragColor.xyz * vec3(clamp(abs(sin(float(uTime))), 0, 1));
+	//fragColor.xyz = clamp(fragColor.xyz * 0.5, 0, 1);
+	rtFragColor = fragColor;
 }

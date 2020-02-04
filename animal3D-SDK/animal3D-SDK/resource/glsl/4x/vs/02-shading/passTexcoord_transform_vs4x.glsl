@@ -17,9 +17,9 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	passTexcoord_transform_vs4x.glsl
-	Vertex shader that passes texture coordinate. Outputs transformed position 
+	Vertex shader that passes texture coordinate. Outputs transformed position
 		attribute and atlas transformed texture coordinate attribute.
 */
 
@@ -33,10 +33,24 @@
 //	5) declare texture coordinate outbound varying
 //	6) correctly transform input texture coordinate by atlas matrix
 
-layout (location = 0) in vec4 aPosition;
+layout(location = 0) in vec4 aPosition;
+layout(location = 2) in vec4 normal; //Step 6
+layout(location = 8) in vec4 aTexCoord; // Step 10
+
+uniform mat4 uMVP; // Step 1 - found in a3_DemoState_loading
+uniform mat4 uP;
+uniform mat4 uMV;
+uniform mat4 uMV_nrm;
+uniform mat4 uAtlas; // Step 4 - found in a3_DemoState_loading
+
+out vec2 vTexCoord; // Step 5 - outbound texture to be read into fragment shader
+out vec4 vViewPos; //Step 2
+out vec4 vModelViewNorm; //Step 8
 
 void main()
 {
-	// DUMMY OUTPUT: directly assign input position to output position
-	gl_Position = aPosition;
+	vViewPos = uMV * aPosition; //Step 3
+	vModelViewNorm = uMV_nrm * normal; //Step 9
+	vTexCoord = vec2(uAtlas * aTexCoord); // Step 6 - transform texture coordinates by atlas matrix
+	gl_Position = uMVP * aPosition; // Step 2 - properly transform input position
 }

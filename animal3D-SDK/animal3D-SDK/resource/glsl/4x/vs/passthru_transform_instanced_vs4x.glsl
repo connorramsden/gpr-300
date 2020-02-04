@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	passthru_transform_instanced_vs4x.glsl
 	Pass-thru GLSL vertex shader. Apply traditional transform for instance.
 */
@@ -26,9 +26,10 @@
 
 #define MAX_INSTANCES 1024
 
-layout (location = 0) in vec4 aPosition;
+layout(location = 0) in vec4 aPosition;
+uniform mat4 uMVP;
 
 void main()
 {
-	gl_Position = aPosition;
+	gl_Position = uMVP * aPosition;
 }

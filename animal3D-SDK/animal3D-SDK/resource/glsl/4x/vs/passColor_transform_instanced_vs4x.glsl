@@ -17,9 +17,9 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	passColor_transform_instanced_vs4x.glsl
-	Transform position attribute for instance and pass color attribute down 
+	Transform position attribute for instance and pass color attribute down
 		the pipeline.
 */
 
@@ -27,7 +27,7 @@
 
 #define MAX_INSTANCES 1024
 
-layout (location = 0) in vec4 aPosition;
+layout(location = 0) in vec4 aPosition;
 
 void main()
 {
