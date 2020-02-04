@@ -28,10 +28,30 @@
 //	0) copy existing texturing shader
 //	1) implement outline algorithm - see render code for uniform hints
 
+in vec2 vTexCoord; // Step 2 - inbound texture coordinate
+
+uniform sampler2D uTex_dm; // Step 1 - found in a3_DemoState_loading
+
 out vec4 rtFragColor;
+uniform float outlineThickness = 0.0002;
+uniform vec3 outlineColor = vec3(0.5, 0.5, 1.0);
 
 void main()
 {
-	// DUMMY OUTPUT: all fragments are OPAQUE DARK GREY
-	rtFragColor = vec4(0.2, 0.2, 0.2, 1.0);
+	vec4 vert = texture2D(uTex_dm, vTexCoord); // Step 3 - sampling texture by casting texcoord to vec2
+	//https://gist.github.com/xoppa/33589b7d5805205f8f08
+	if (vert.a < 0.5f)
+	{
+		float a = 0;
+		a += texture2D(uTex_dm, vTexCoord + vec2(0, outlineThickness)).a;
+		a += texture2D(uTex_dm, vTexCoord + vec2(0, -outlineThickness)).a;
+		a += texture2D(uTex_dm, vTexCoord + vec2(outlineThickness, 0)).a;
+		a += texture2D(uTex_dm, vTexCoord + vec2(-outlineThickness, 0)).a;
+		if (a/4.0 > 0.5f)
+		{
+			vert = vec4(outlineColor 1.0);
+		}
+	}
+	
+	rtFragColor = vert; // Step 4 - assigning sample to output
 }
