@@ -32,9 +32,19 @@
 uniform sampler2D uImage00;
 
 layout (location = 0) out vec4 rtFragColor;
+layout (location = 1) out vec4 rtLuminance;
+
+// (1)
+float relativeLuminance(vec3 col);
 
 void main()
 {
 	// DUMMY OUTPUT: all fragments are OPAQUE CYAN
 	rtFragColor = vec4(0.0, 1.0, 1.0, 1.0);
+}
+
+float relativeLuminance(vec3 c) 
+{
+	// Formula for faking human eye luminance response
+	return (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b);
 }
