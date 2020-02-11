@@ -37,7 +37,7 @@ const int MAX_LIGHTS = 4;
 in vec4 vModelViewNorm;
 in vec4 vViewPos;
 in vec2 vTexCoord;
-in vec4 vShadowCoord; // Step 1
+in vec4 vShadowCoord;
 
 uniform sampler2D uTex_dm;
 uniform sampler2D uTex_sm;
@@ -107,8 +107,17 @@ void main()
 
 	// Found on DBuckstein Slide Deck 4, pg. 13
 	vec4 shadowScreen = vShadowCoord / vShadowCoord.w; // Step 2 - perspective divide
+	rtFragColor = texture2D(uTex_shadow, shadowScreen.xy);
 
-	 rtFragColor = vec4(phong.xyz, 1.0);
+	float shadowSample = texture2D(uTex_shadow, shadowScreen.xy).r;
+
+	bool fragIsShadowed = (shadowScreen.z > shadowSample);
+	if(fragIsShadowed)
+	{
+		phong *= 0.2;
+	}
+
+	//rtFragColor = vec4(phong.xyz, 1.0);
 	//rtFragColor = texture2D(uTex_shadow, shadowScreen.xy);
 	rtViewPos = vec4(vViewPos.xyz, 1.0);
 	rtViewNormal = vec4(surfaceNorm.xyz, 1.0);
