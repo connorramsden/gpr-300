@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	drawTexture_coordManip_fs4x.glsl
 	Draw texture sample after manipulating texcoord.
 */
@@ -33,8 +33,16 @@
 
 out vec4 rtFragColor;
 
+uniform sampler2D uTex_dm;
+uniform double uTime;
+in vec2 vTexCoord;
+
 void main()
 {
 	// DUMMY OUTPUT: all fragments are OPAQUE DARK GREY
-	rtFragColor = vec4(0.2, 0.2, 0.2, 1.0);
+	vec2 texCoord = vTexCoord;
+	texCoord += vec2(sin(float(uTime)), 0);
+	vec3 color = texture(uTex_dm, texCoord).xyz;
+
+	rtFragColor = vec4(color, 1.0);
 }

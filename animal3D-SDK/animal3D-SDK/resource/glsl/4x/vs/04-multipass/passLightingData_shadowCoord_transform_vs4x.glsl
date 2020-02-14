@@ -27,15 +27,31 @@
 #version 410
 
 // ****TO-DO: 
-//	0) copy previous lighting data vertex shader
+//	0) copy previous lighting data vertex shader //DONE
 //	1) declare MVPB matrix for light
 //	2) declare varying for shadow coordinate
 //	3) calculate and pass shadow coordinate
 
-layout (location = 0) in vec4 aPosition;
+layout(location = 0) in vec4 aPosition;
+layout(location = 2) in vec4 normal; 
+layout(location = 8) in vec4 aTexCoord;
+
+uniform mat4 uMV;
+uniform mat4 uP; 
+uniform mat4 uMV_nrm;
+uniform mat4 uAtlas; 
+uniform mat4 uMVPB_other; // Step 1
+
+out vec4 vViewPos; 
+out vec4 vModelViewNorm;
+out vec2 vTexCoord;
+out vec4 vShadowCoord; // Step 2
 
 void main()
 {
-	// DUMMY OUTPUT: directly assign input position to output position
-	gl_Position = aPosition;
+	vViewPos = uMV * aPosition;
+	vModelViewNorm = uMV_nrm * normal;
+	vTexCoord = vec2(uAtlas * aTexCoord);
+	gl_Position = uP * vViewPos;	
+	vShadowCoord = uMVPB_other * aPosition; // Step 3
 }

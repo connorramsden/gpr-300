@@ -32,10 +32,95 @@
 //	3) declare shadow map texture
 //	4) perform shadow test
 
-out vec4 rtFragColor;
+const int MAX_LIGHTS = 4;
+
+in vec4 vModelViewNorm;
+in vec4 vViewPos;
+in vec2 vTexCoord;
+in vec4 vShadowCoord; // Step 1
+
+uniform sampler2D uTex_dm;
+uniform sampler2D uTex_sm;
+uniform sampler2D uTex_shadow; // Step 3
+uniform int uLightCt;
+uniform vec4 uLightPos[MAX_LIGHTS];
+uniform vec4 uLightCol[MAX_LIGHTS];
+uniform float uLightSz[MAX_LIGHTS];
+
+layout(location = 0) out vec4 rtFragColor;
+
+// Returns normalized light vector
+vec4 getNormalizedLight(vec4 lightPos, vec4 objPos);
+// Returns the dot product of the passed normal and light vector
+float getDiffuseCoeff(vec4 normal, vec4 lightVector);
 
 void main()
 {
-	// DUMMY OUTPUT: all fragments are OPAQUE GREEN
-	rtFragColor = vec4(0.0, 1.0, 0.0, 1.0);
+	vec4 texDiffuse = texture2D(uTex_dm, vTexCoord);
+	vec4 texSpecular = texture2D(uTex_sm, vTexCoord);
+
+	vec4 phong;
+
+	vec4 surfaceNorm = normalize(vModelViewNorm);	
+
+	vec4 projScreen = vShadowCoord / vShadowCoord.w; // Step 2
+	float shadowSample = texture2D(uTex_shadow, projScreen.xy).r; // Step 4
+	bool fragIsShadowed = projScreen.z > (shadowSample + 0.0025); // Step 4
+
+	for (int i = 0; i < uLightCt; ++i) {
+		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPos);
+
+		// Calculate diffuse coefficient
+		float diffuse = getDiffuseCoeff(surfaceNorm, lightNorm);
+		
+		// Scale diffuse & proceed w/ shading
+		if(fragIsShadowed)
+		{
+			diffuse *= 0.2;
+		}
+
+		// Create the lambertian reflection from the diffuse coefficient and the diffuse texture
+		vec4 lambert = diffuse * texDiffuse;
+
+		// Calculate reflected light value
+		vec4 reflection = 2.0 * diffuse * surfaceNorm - lightNorm;
+
+		// Calculate initial specular coefficient
+		float specularCoeff = max(0.0, dot(-normalize(vViewPos), reflection));
+		
+		// Exponentially increase specular coefficient
+		specularCoeff *= specularCoeff; // ks^2
+		specularCoeff *= specularCoeff; // ks^4
+		specularCoeff *= specularCoeff; // ks^8
+		specularCoeff *= specularCoeff; // ks^16
+		specularCoeff *= specularCoeff; // ks^32
+		specularCoeff *= specularCoeff; // ks^64
+
+		vec4 specular = specularCoeff * texSpecular;
+
+		phong += (lambert + specular) * uLightCol[i];
+	}
+
+	vec4 viewNorm = normalize(vViewPos);
+	float facingPercentage = dot(surfaceNorm, viewNorm);
+	//phong = phong * facingPercentage;
+	if(facingPercentage > -0.2)
+	{
+		phong = vec4(1.0);
+	}
+	rtFragColor = vec4(phong.xyz, 1.0);
+}
+
+// Returns normalized light vector (L_hat)
+vec4 getNormalizedLight(vec4 lightPos, vec4 objPos)
+{
+	vec4 lightVec = lightPos - objPos;
+	return normalize(lightVec);
+}
+
+// Returns the dot product of the passed normal and light vector
+// Make sure to pass normalized values in
+float getDiffuseCoeff(vec4 normal, vec4 lightVector)
+{
+	return max(0.0, dot(normal, lightVector));
 }

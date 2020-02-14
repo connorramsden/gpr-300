@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	drawLambert_multi_mrt_fs4x.glsl
 	Draw Lambert shading model for multiple lights with MRT output.
 */
@@ -33,10 +33,68 @@
 //	5) set location of final color render target (location 0)
 //	6) declare render targets for each attribute and shading component
 
-out vec4 rtFragColor;
+const int MAX_LIGHTS = 4;
+
+in vec4 vModelViewNorm;
+in vec4 vViewPos;
+in vec2 vTexCoord;
+
+uniform sampler2D uTex_dm;
+uniform int uLightCt;
+uniform vec4 uLightPos[MAX_LIGHTS];
+uniform vec4 uLightCol[MAX_LIGHTS];
+uniform float uLightSz[MAX_LIGHTS];
+
+layout(location = 0) out vec4 rtFragColor;
+layout(location = 1) out vec4 rtViewPos;
+layout(location = 2) out vec4 rtViewNormal;
+layout(location = 3) out vec4 rtTexCoord;
+layout(location = 4) out vec4 rtDiffuseMap;
+layout(location = 6) out vec4 rtDiffuseLightTotal;
+
+vec4 getNormalizedLight(vec4 lightPos, vec4 objPos);
+float getDiffuseCoeff(vec4 surfaceNorm, vec4 lightNorm);
 
 void main()
 {
-	// DUMMY OUTPUT: all fragments are OPAQUE RED
-	rtFragColor = vec4(1.0, 0.0, 0.0, 1.0);
+	vec4 texDiffuse = texture(uTex_dm, vTexCoord);
+
+	vec4 outCol;
+	vec4 lightingTotal;
+
+	vec4 surfaceNorm = normalize(vModelViewNorm);
+
+	for (int i = 0; i < uLightCt; ++i) {
+		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPos);
+
+		float diffuse = getDiffuseCoeff(surfaceNorm, lightNorm);
+
+		lightingTotal += diffuse;
+
+		vec4 lambert = diffuse * texDiffuse;
+
+		outCol += lambert * uLightCol[i];
+	}
+
+	// Assign all Render Targets
+	rtFragColor = vec4(outCol.xyz, 1.0);
+	rtViewPos = vec4(vViewPos.xyz, 1.0);
+	rtViewNormal = vec4(surfaceNorm.xyz, 1.0);
+	rtTexCoord = vec4(vTexCoord, 0.0, 1.0);
+	rtDiffuseMap = vec4(texDiffuse.xyz, 1.0);
+	rtDiffuseLightTotal = vec4(lightingTotal.xyz, 1.0);
+}
+
+// Returns normalized light vector (L_hat)
+vec4 getNormalizedLight(vec4 lightPos, vec4 objPos)
+{
+	vec4 lightVec = lightPos - objPos;
+	return normalize(lightVec);
+}
+
+// Returns the clamped dot product of the passed normal and light vector
+// Make sure to pass normalized values in
+float getDiffuseCoeff(vec4 surfaceNorm, vec4 lightNorm)
+{
+	return max(0.0, dot(surfaceNorm, lightNorm));
 }
