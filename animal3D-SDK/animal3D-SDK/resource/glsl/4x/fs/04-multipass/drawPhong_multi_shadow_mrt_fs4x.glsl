@@ -100,14 +100,6 @@ void main()
 
 		phong += (lambert + specular) * uLightCol[i];
 	}
-
-	vec4 viewNorm = normalize(vViewPos);
-	float facingPercentage = dot(surfaceNorm, viewNorm);
-	//phong = phong * facingPercentage;
-	if(facingPercentage > -0.2)
-	{
-		phong = vec4(1.0);
-	}
 	rtFragColor = vec4(phong.xyz, 1.0);
 }
 

@@ -259,12 +259,6 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		demoState->fbo_post_c16_2fr + 1,
 		demoState->fbo_post_c16_2fr + 2,
 
-
-
-
-
-
-		
 		demoState->fbo_composite_c16 + 0,
 	};
 
