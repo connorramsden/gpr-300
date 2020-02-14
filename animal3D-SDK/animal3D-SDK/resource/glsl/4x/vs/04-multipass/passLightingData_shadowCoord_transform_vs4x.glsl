@@ -49,7 +49,7 @@ out vec4 vShadowCoord; // Step 2
 
 void main()
 {
-	vViewPos = uMV * aPosition; 
+	vViewPos = uMV * aPosition;
 	vModelViewNorm = uMV_nrm * normal;
 	vTexCoord = vec2(uAtlas * aTexCoord);
 	gl_Position = uP * vViewPos;	
