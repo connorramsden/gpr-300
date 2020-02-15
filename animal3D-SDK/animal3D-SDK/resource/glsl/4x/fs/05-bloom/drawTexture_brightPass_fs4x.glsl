@@ -43,8 +43,7 @@ void main()
 {
 	vec3 color = texture(uImage00, vTexCoord).xyz;
 	float lum = relativeLuminance(color);
-	//rtFragColor = vec4(color, 1.0) * lum;
-	rtFragColor = vec4(1.0);
+	rtFragColor = vec4(color * lum, 1.0);
 	rtLuminance = vec4(lum);
 }
 

@@ -538,43 +538,86 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	currentDemoProgram = demoState->prog_drawTexture_blurGaussian;
 	a3shaderProgramActivate(currentDemoProgram->program);
 	a3real2Set(pixelSize.v, a3recip((a3real)currentWriteFBO->frameWidth), a3recip((a3real)currentWriteFBO->frameHeight));
+	
 	a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uSize, 1, pixelSize.v);
-
 	// ****TO-DO: 
 	//	-> 3.1b: perform 1D blur pass, horizontal axis (4 lines): 
 	//		-> 1) activate framebuffer for writing
 	//		-> 2) bind first color texture from framebuffer used in previous pass
 	//		-> 3) send blur axis as uniform (2D vector)
 	//		-> 4) draw full-screen quad (already active
-	sampleAxisH = a3vec2_x;	// delete this line; variable is already initialized
-	/*
+
+	//1/4 size
+	a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, 1, sampleAxisH.v);
 	currentPass = pipelines_passBlurH_2;
 	currentWriteFBO = writeFBO[currentPass];
 	currentReadFBO = readFBO[currentPass][0];
-	???
-	???
-	???
-	???
-	*/
+	a3framebufferActivate(currentWriteFBO); // Step 1
+	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
+	a3vertexDrawableRenderActive(); // Step 3	
+
+	//1/16
+	currentPass = pipelines_passBlurH_4;
+	currentWriteFBO = writeFBO[currentPass];
+	currentReadFBO = readFBO[currentPass][0];
+	a3framebufferActivate(currentWriteFBO); // Step 1
+	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
+	a3vertexDrawableRenderActive(); // Step 3
+	//1/32
+	currentPass = pipelines_passBlurH_8;
+	currentWriteFBO = writeFBO[currentPass];
+	currentReadFBO = readFBO[currentPass][0];
+	a3framebufferActivate(currentWriteFBO); // Step 1
+	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
+	a3vertexDrawableRenderActive(); // Step 3	
 
 	// ****TO-DO: 
 	//	-> 3.1c: repeat previous pass but using vertical axis
-	sampleAxisV = a3vec2_y;	// delete this line; variable is already initialized
-	/*
+	
+	a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, 1, sampleAxisV.v);
+
 	currentPass = pipelines_passBlurV_2;
 	currentWriteFBO = writeFBO[currentPass];
 	currentReadFBO = readFBO[currentPass][0];
-	???
-	???
-	???
-	???
-	*/
+	a3framebufferActivate(currentWriteFBO); // Step 1
+	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
+	a3vertexDrawableRenderActive(); // Step 3	
+
+	currentPass = pipelines_passBlurV_4;
+	currentWriteFBO = writeFBO[currentPass];
+	currentReadFBO = readFBO[currentPass][0];
+	a3framebufferActivate(currentWriteFBO); // Step 1
+	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
+	a3vertexDrawableRenderActive(); // Step 3	
+
+	currentPass = pipelines_passBlurV_8;
+	currentWriteFBO = writeFBO[currentPass];
+	currentReadFBO = readFBO[currentPass][0];
+	a3framebufferActivate(currentWriteFBO); // Step 1
+	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
+	a3vertexDrawableRenderActive(); // Step 3	
+	
 
 	// ****TO-DO: 
 	//	-> 4.1f: repeat bright pass and blur passes on smaller FBOs
 	/*
 	????????? see above
 	*/
+
+	currentPass = pipelines_passBright_4;
+	currentWriteFBO = writeFBO[currentPass];
+	currentReadFBO = readFBO[currentPass][0];
+	a3framebufferActivate(currentWriteFBO); // Step 1
+	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
+	a3vertexDrawableRenderActive(); // Step 3	
+
+	currentPass = pipelines_passBright_8;
+	currentWriteFBO = writeFBO[currentPass];
+	currentReadFBO = readFBO[currentPass][0];
+	a3framebufferActivate(currentWriteFBO); // Step 1
+	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
+	a3vertexDrawableRenderActive(); // Step 3
+
 
 
 	// bloom composite
