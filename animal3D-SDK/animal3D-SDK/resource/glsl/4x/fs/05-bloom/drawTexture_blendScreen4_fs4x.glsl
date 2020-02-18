@@ -32,27 +32,23 @@
 
 in vec2 vTexCoord; // Step 2
 
+uniform sampler2D uTex_dm;
 uniform sampler2D uImage00;	// Step 1
 uniform sampler2D uImage01;	// Step 1
-uniform sampler2D uImage02;	// Step 1
-uniform sampler2D uImage03; // Step 1
-
 out vec4 rtFragColor;
 
 // DBuckstein Slide Deck 5 (Bloom), pg. 32
-vec4 screen(vec4 a, vec4 b, vec4 c, vec4 d) 
+vec4 screen(vec4 a, vec4 b) 
 {
-	return 1.0 - (1.0 - a) * (1.0 - b) * (1.0 - c) * (1.0 - d);
+	return 1.0 - (1.0 - a) * (1.0 - b);
 }
 
 void main()
 {
 	vec4 firstSample = texture(uImage00, vTexCoord);
-	vec4 secondSample = texture(uImage01, vTexCoord);
-	vec4 thirdSample = texture(uImage02, vTexCoord);
-	vec4 fourthSample = texture(uImage03, vTexCoord);
+	vec4 secondSample = texture(uTex_dm, vTexCoord);
 
-	vec4 composite = screen(firstSample, secondSample, thirdSample, fourthSample);
+	vec4 composite = screen(firstSample, secondSample);
 
 	rtFragColor = composite;
 }
