@@ -29,7 +29,7 @@
 // ****TO-DO: 
 //	0) copy deferred Phong shader
 //	1) declare g-buffer textures as uniform samplers
-//	2) declare lighting data as uniform block
+//	2) declare lighting data as uniform block // DONE
 //	3) calculate lighting components (diffuse and specular) for the current 
 //		light only, output results (they will be blended with previous lights)
 //			-> use reverse perspective divide for position using scene depth
@@ -38,6 +38,24 @@
 
 in vec4 vBiasedClipCoord;
 flat in int vInstanceID;
+
+// (2)
+// simple point light
+struct sPointLight
+{
+	vec4 worldPos;						// position in world space
+	vec4 viewPos;						// position in viewer space
+	vec4 color;							// RGB color with padding
+	float radius;						// radius (distance of effect from center)
+	float radiusInvSq;					// radius inverse squared (attenuation factor)
+	float pad[2];						// padding
+};
+
+
+// (2)
+uniform ubPointLight {
+	sPointLight uLight[MAX_LIGHTS];
+};
 
 layout (location = 6) out vec4 rtDiffuseLight;
 layout (location = 7) out vec4 rtSpecularLight;
