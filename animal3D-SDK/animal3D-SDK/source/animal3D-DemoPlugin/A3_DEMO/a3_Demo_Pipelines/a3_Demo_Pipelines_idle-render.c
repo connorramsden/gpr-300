@@ -282,19 +282,22 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		
 		{ demoState->fbo_post_c16_2fr + 0, 0, },
 		{ demoState->fbo_post_c16_2fr + 1, 0, },
+		{ demoState->fbo_post_c16_2fr + 2, 0, },
 
-
-
-
-
-
+		{ demoState->fbo_post_c16_4fr + 0, 0, },
+		{ demoState->fbo_post_c16_4fr + 1, 0, },
+		{ demoState->fbo_post_c16_4fr + 2, 0, },
+		// 
+		// { demoState->fbo_post_c16_8fr + 0, 0, },
+		// { demoState->fbo_post_c16_8fr + 1, 0, },
+		// { demoState->fbo_post_c16_8fr + 2, 0, },
 		
 		// ****TO-DO: 
 		//	-> 2.1f: uncomment blend pass read list with half-size FBO and original composite
-		{ demoState->fbo_post_c16_2fr + 2, demoState->fbo_composite_c16 + 2, 0, 0, },
+		// { demoState->fbo_post_c16_2fr + 2, demoState->fbo_composite_c16 + 2, 0, 0, },
 		// ****TO-DO: 
 		//	-> 4.1e: replace above blend pass read list with extended read list below
-	//	{ demoState->fbo_post_c16_8fr + 2, demoState->fbo_post_c16_4fr + 2, demoState->fbo_post_c16_2fr + 2, demoState->fbo_composite_c16 + 2, },
+		{ demoState->fbo_post_c16_8fr + 2, demoState->fbo_post_c16_4fr + 2, demoState->fbo_post_c16_2fr + 2, demoState->fbo_composite_c16 + 2, },
 	};
 
 	// target info

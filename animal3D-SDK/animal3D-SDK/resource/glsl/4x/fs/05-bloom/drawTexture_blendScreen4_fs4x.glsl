@@ -25,17 +25,34 @@
 #version 410
 
 // ****TO-DO: 
-//	0) copy existing texturing shader
-//	1) declare additional texture uniforms
-//	2) implement screen function with 4 inputs
-//	3) use screen function to sample input textures
+//	1) declare uniform variable for texture; see demo code for hints
+//	2) declare inbound varying for texture coordinate
+//	3) sample texture using texture coordinate
+//	4) assign sample to output color
 
-uniform sampler2D uImage00;
+in vec2 vTexCoord; // Step 2
 
-layout (location = 0) out vec4 rtFragColor;
+uniform sampler2D uImage00;	// Step 1
+uniform sampler2D uImage01;	// Step 1
+uniform sampler2D uImage02;	// Step 1
+uniform sampler2D uImage03; // Step 1
+
+out vec4 rtFragColor;
+
+// DBuckstein Slide Deck 5 (Bloom), pg. 32
+vec4 screen(vec4 a, vec4 b, vec4 c, vec4 d) 
+{
+	return 1.0 - (1.0 - a) * (1.0 - b) * (1.0 - c) * (1.0 - d);
+}
 
 void main()
 {
-	// DUMMY OUTPUT: all fragments are OPAQUE YELLOW
-	rtFragColor = vec4(1.0, 1.0, 0.0, 1.0);
+	vec4 firstSample = texture(uImage00, vTexCoord);
+	vec4 secondSample = texture(uImage01, vTexCoord);
+	vec4 thirdSample = texture(uImage02, vTexCoord);
+	vec4 fourthSample = texture(uImage03, vTexCoord);
+
+	vec4 composite = screen(firstSample, secondSample, thirdSample, fourthSample);
+
+	rtFragColor = composite;
 }
