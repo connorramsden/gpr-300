@@ -880,10 +880,6 @@ void a3demo_loadFramebuffers(a3_DemoState* demoState)
 			targets_post, colorType_post, a3fbo_depthDisable,
 			frameWidth2, frameHeight2);
 
-		
-		//???? need to activate buffer
-
-
 		// ****TO-DO: 
 		//	-> 4.1b: set up smaller framebuffers
 		
@@ -891,13 +887,11 @@ void a3demo_loadFramebuffers(a3_DemoState* demoState)
 		a3framebufferCreate(fbo, "fbo:quarter", 
 			targets_post, colorType_post, a3fbo_depthDisable,
 			frameWidth4, frameHeight4);
-		//???
+		
 		fbo = demoState->fbo_post_c16_8fr + i;
 		a3framebufferCreate(fbo, "fbo:eighth", 
 			targets_post, colorType_post, a3fbo_depthDisable,
-			frameWidth8, frameHeight8);
-		//???
-		
+			frameWidth8, frameHeight8);		
 	}
 
 

@@ -287,10 +287,9 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		{ demoState->fbo_post_c16_4fr + 0, 0, },
 		{ demoState->fbo_post_c16_4fr + 1, 0, },
 		{ demoState->fbo_post_c16_4fr + 2, 0, },
-		// 
-		// { demoState->fbo_post_c16_8fr + 0, 0, },
-		// { demoState->fbo_post_c16_8fr + 1, 0, },
-		// { demoState->fbo_post_c16_8fr + 2, 0, },
+		
+		{ demoState->fbo_post_c16_8fr + 0, 0, },
+		{ demoState->fbo_post_c16_8fr + 1, 0, },
 		
 		// ****TO-DO: 
 		//	-> 2.1f: uncomment blend pass read list with half-size FBO and original composite
@@ -550,7 +549,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	//		-> 3) send blur axis as uniform (2D vector)
 	//		-> 4) draw full-screen quad (already active
 
-	//1/4 size
+	//1/2 size
 	a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, 1, sampleAxisH.v);
 	currentPass = pipelines_passBlurH_2;
 	currentWriteFBO = writeFBO[currentPass];
@@ -566,10 +565,12 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	a3framebufferActivate(currentWriteFBO); // Step 1
 	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
 	a3vertexDrawableRenderActive(); // Step 3
+
 	//1/32
 	currentPass = pipelines_passBlurH_8;
 	currentWriteFBO = writeFBO[currentPass];
 	currentReadFBO = readFBO[currentPass][0];
+
 	a3framebufferActivate(currentWriteFBO); // Step 1
 	a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0); // Step 2
 	a3vertexDrawableRenderActive(); // Step 3	
