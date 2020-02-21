@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_DemoState_loading.c/.cpp
 	Demo state function implementations.
 
@@ -98,7 +98,7 @@ inline a3real4x4r a3demo_setAtlasTransform_internal(a3real4x4p m_out,
 
 
 // initialize dummy drawable
-inline void a3demo_initDummyDrawable_internal(a3_DemoState *demoState)
+inline void a3demo_initDummyDrawable_internal(a3_DemoState* demoState)
 {
 	// dummy drawable for point drawing: copy any of the existing ones, 
 	//	set vertex count to 1 and primitive to points (0x0000)
@@ -145,12 +145,12 @@ inline void a3demo_initDummyDrawable_internal(a3_DemoState *demoState)
 // LOADING
 
 // utility to load geometry
-void a3demo_loadGeometry(a3_DemoState *demoState)
+void a3demo_loadGeometry(a3_DemoState* demoState)
 {
 	// tmp descriptor for loaded model
 	typedef struct a3_TAG_DEMOSTATELOADEDMODEL {
-		const a3byte *filePath;
-		const a3real *transform;
+		const a3byte* filePath;
+		const a3real* transform;
 		a3_ModelLoaderFlag flag;
 	} a3_DemoStateLoadedModel;
 
@@ -163,18 +163,18 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	};
 
 	// pointer to shared vbo/ibo
-	a3_VertexBuffer *vbo_ibo;
-	a3_VertexArrayDescriptor *vao;
-	a3_VertexDrawable *currentDrawable;
+	a3_VertexBuffer* vbo_ibo;
+	a3_VertexArrayDescriptor* vao;
+	a3_VertexDrawable* currentDrawable;
 	a3ui32 sharedVertexStorage = 0, sharedIndexStorage = 0;
 	a3ui32 numVerts = 0;
 	a3ui32 i;
-//	a3ui32 j;
+	//	a3ui32 j;
 
 
-	// file streaming (if requested)
+		// file streaming (if requested)
 	a3_FileStream fileStream[1] = { 0 };
-	const a3byte *const geometryStream = "./data/geom_data_gpro_coursebase.dat";
+	const a3byte* const geometryStream = "./data/geom_data_gpro_coursebase.dat";
 
 	// geometry data
 	a3_GeometryData displayShapesData[4] = { 0 };
@@ -188,7 +188,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 	// common index format
 	a3_IndexFormatDescriptor sceneCommonIndexFormat[1] = { 0 };
-	a3ui32 bufferOffset, *const bufferOffsetPtr = &bufferOffset;
+	a3ui32 bufferOffset, * const bufferOffsetPtr = &bufferOffset;
 
 
 	// procedural scene objects
@@ -244,7 +244,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 		// hidden volumes and shapes
 		//	(light volumes)
-		a3proceduralCreateDescriptorSphere(hiddenShapes + 0, a3geomFlag_vanilla, a3geomAxis_default, 
+		a3proceduralCreateDescriptorSphere(hiddenShapes + 0, a3geomFlag_vanilla, a3geomAxis_default,
 			lightVolumeRadius * a3trigFaceToPointRatio(a3real_threesixty, a3real_oneeighty, lightVolumeSlices, lightVolumeStacks),
 			lightVolumeSlices, lightVolumeStacks);
 		for (i = 0; i < hiddenShapesCount; ++i)
@@ -379,10 +379,10 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 
 // utility to load shaders
-void a3demo_loadShaders(a3_DemoState *demoState)
+void a3demo_loadShaders(a3_DemoState* demoState)
 {
 	// direct to demo programs
-	a3_DemoStateShaderProgram *currentDemoProg;
+	a3_DemoStateShaderProgram* currentDemoProg;
 	a3i32 flag;
 	a3ui32 i;
 
@@ -495,7 +495,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			{ { { 0 },	"shdr-fs:draw-tex-blend4",			a3shader_fragment,	1,{ A3_DEMO_FS"05-bloom/drawTexture_blendScreen4_fs4x.glsl" } } },
 		}
 	};
-	a3_DemoStateShader *const shaderListPtr = (a3_DemoStateShader *)(&shaderList), *shaderPtr;
+	a3_DemoStateShader* const shaderListPtr = (a3_DemoStateShader*)(&shaderList), * shaderPtr;
 	const a3ui32 numUniqueShaders = sizeof(shaderList) / sizeof(a3_DemoStateShader);
 
 
@@ -620,13 +620,13 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	// 05-bloom programs: 
 	// ****TO-DO: 
 	//	-> 2.1b: setup bright pass program
-	
+
 	// texturing with bright-pass or tone-mapping
 	currentDemoProg = demoState->prog_drawTexture_brightPass;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-bright");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_brightPass_fs->shader);
-	
+
 	// ****TO-DO: 
 	//	-> 3.1a: setup Gaussian blur program
 
@@ -638,13 +638,13 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 	// ****TO-DO: 
 	//	-> 4.1a: setup screen blending program
-	
+
 	// texturing with bloom composition
 	currentDemoProg = demoState->prog_drawTexture_blendScreen4;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-blend4");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_blendScreen4_fs->shader);
-	
+
 
 
 	// activate a primitive for validation
@@ -693,7 +693,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 		a3demo_setUniformDefaultMat4(currentDemoProg, uMVPB);
 		a3demo_setUniformDefaultMat4(currentDemoProg, uMVPB_other);
 		a3demo_setUniformDefaultMat4(currentDemoProg, uAtlas);
-		
+
 		// common FS
 		a3demo_setUniformDefaultInteger(currentDemoProg, uLightCt, defaultInt);
 		a3demo_setUniformDefaultFloat(currentDemoProg, uLightSz, defaultFloat);
@@ -873,25 +873,25 @@ void a3demo_loadFramebuffers(a3_DemoState* demoState)
 
 		// ****TO-DO: 
 		//	-> 2.1c: set up half-size framebuffers
-		
+
 		//	-> post-processing, color only
 		fbo = demoState->fbo_post_c16_2fr + i;
-		a3framebufferCreate(fbo, "fbo:half", 
+		a3framebufferCreate(fbo, "fbo:half",
 			targets_post, colorType_post, a3fbo_depthDisable,
 			frameWidth2, frameHeight2);
 
 		// ****TO-DO: 
 		//	-> 4.1b: set up smaller framebuffers
-		
+
 		fbo = demoState->fbo_post_c16_4fr + i;
-		a3framebufferCreate(fbo, "fbo:quarter", 
+		a3framebufferCreate(fbo, "fbo:quarter",
 			targets_post, colorType_post, a3fbo_depthDisable,
 			frameWidth4, frameHeight4);
-		
+
 		fbo = demoState->fbo_post_c16_8fr + i;
-		a3framebufferCreate(fbo, "fbo:eighth", 
+		a3framebufferCreate(fbo, "fbo:eighth",
 			targets_post, colorType_post, a3fbo_depthDisable,
-			frameWidth8, frameHeight8);		
+			frameWidth8, frameHeight8);
 	}
 
 
@@ -926,7 +926,7 @@ void a3demo_loadFramebuffers(a3_DemoState* demoState)
 //-----------------------------------------------------------------------------
 
 // internal utility for refreshing drawable
-inline void a3_refreshDrawable_internal(a3_VertexDrawable *drawable, a3_VertexArrayDescriptor *vertexArray, a3_IndexBuffer *indexBuffer)
+inline void a3_refreshDrawable_internal(a3_VertexDrawable* drawable, a3_VertexArrayDescriptor* vertexArray, a3_IndexBuffer* indexBuffer)
 {
 	drawable->vertexArray = vertexArray;
 	if (drawable->indexType)
@@ -938,14 +938,14 @@ inline void a3_refreshDrawable_internal(a3_VertexDrawable *drawable, a3_VertexAr
 //	reloaded, old function pointers are out of scope!
 // could reload everything, but that would mean rebuilding GPU data...
 //	...or just set new function pointers!
-void a3demo_refresh(a3_DemoState *demoState)
+void a3demo_refresh(a3_DemoState* demoState)
 {
-	a3_BufferObject *currentBuff = demoState->drawDataBuffer,
-		*const endBuff = currentBuff + demoStateMaxCount_drawDataBuffer;
-	a3_VertexArrayDescriptor *currentVAO = demoState->vertexArray,
-		*const endVAO = currentVAO + demoStateMaxCount_vertexArray;
-	a3_DemoStateShaderProgram *currentProg = demoState->shaderProgram,
-		*const endProg = currentProg + demoStateMaxCount_shaderProgram;
+	a3_BufferObject* currentBuff = demoState->drawDataBuffer,
+		* const endBuff = currentBuff + demoStateMaxCount_drawDataBuffer;
+	a3_VertexArrayDescriptor* currentVAO = demoState->vertexArray,
+		* const endVAO = currentVAO + demoStateMaxCount_vertexArray;
+	a3_DemoStateShaderProgram* currentProg = demoState->shaderProgram,
+		* const endProg = currentProg + demoStateMaxCount_shaderProgram;
 	a3_Texture* currentTex = demoState->texture,
 		* const endTex = currentTex + demoStateMaxCount_texture;
 	a3_Framebuffer* currentFBO = demoState->framebuffer,
@@ -990,6 +990,5 @@ void a3demo_refresh(a3_DemoState *demoState)
 
 	a3demo_initDummyDrawable_internal(demoState);
 }
-
 
 //-----------------------------------------------------------------------------
