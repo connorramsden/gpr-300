@@ -46,17 +46,20 @@ in vbLightingData{
 	vec4 vBiasedClipCoord;
 };
 
-// a3_DemoState_loading.c (lines ~754+)
-/*
-	uImage00 == uTex_dm
-	uImage01 == uTex_sm
-	uImage02 == uTex_nm
-	uImage03 == uTex_hm
-	uImage04 == uTex_dm_ramp
-	uImage05 == uTex_sm_ramp
-	uImage06 == uTex_shadow
-	uImage07 == uTex_proj
-*/
+uniform int uLightCt;
+uniform vec4 uLightPos[MAX_LIGHTS];
+uniform vec4 uLightCol[MAX_LIGHTS];
+uniform float uLightSz[MAX_LIGHTS];
+
+// (1) a3_DemoState_loading.c (lines ~754+)
+uniform sampler2D uImage00; // uTex_dm
+uniform sampler2D uImage01; // uTex_sm
+uniform sampler2D uImage02; // uTex_nm
+uniform sampler2D uImage03; // uTex_hm
+uniform sampler2D uImage04; // uTex_dm_ramp
+uniform sampler2D uImage05; // uTex_sm_ramp
+uniform sampler2D uImage06; // uTex_shadow
+uniform sampler2D uImage07; // uTex_proj
 
 layout (location = 0) out vec4 rtFragColor;
 layout (location = 4) out vec4 rtDiffuseMapSample;
@@ -64,23 +67,73 @@ layout (location = 5) out vec4 rtSpecularMapSample;
 layout (location = 6) out vec4 rtDiffuseLightTotal;
 layout (location = 7) out vec4 rtSpecularLightTotal;
 
-// simple point light (modeled after a3_DemoPointLight)
-struct uPointLight
-{
-	vec4 worldPos;					// position in world space
-	vec4 viewPos;						// position in viewer space
-	vec4 color;						// RGB color with padding
-	float radius;						// radius (distance of effect from center)
-	float radiusInvSq;					// radius inverse squared (attenuation factor)
-	float pad[2];						// padding
-};
+// Returns normalized light vector
+vec4 getNormalizedLight(vec4 lightPos, vec4 objPos);
+// Returns the dot product of the passed normal and light vector
+float getDiffuseCoeff(vec4 normal, vec4 lightVector);
 
 void main()
 {
+	// Calculating gBuffers	
+	vec4 gTexcoord = texture(uImage03, vec2(vTexcoord));
+	vec4 gNormal = texture(uImage02, vec2(gTexcoord));
+
+	// Sample Albedos
+	vec4 gDiffuse = texture(uImage00, vec2(gTexcoord));
+	vec4 gSpecular = texture(uImage01, vec2(gTexcoord));
+	
+	vec4 phong;
+	vec4 diffuse;
+	vec4 specular;
+
+	vec4 surfaceNorm = normalize(gNormal);
+
+	for (int i = 0; i < uLightCt; ++i) {
+		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPosition);
+
+		// Calculate diffuse coefficient
+		float diffuseCoeff = getDiffuseCoeff(surfaceNorm, lightNorm);
+
+		// Create the lambertian reflection from the diffuse coefficient and the diffuse texture
+		diffuse = diffuseCoeff * gDiffuse;
+
+		// Calculate reflected light value
+		vec4 reflection = 2.0 * diffuseCoeff * surfaceNorm - lightNorm;
+
+		// Calculate initial specular coefficient
+		float specularCoeff = max(0.0, dot(-normalize(vViewPosition), reflection));
+		
+		// Exponentially increase specular coefficient
+		specularCoeff *= specularCoeff; // ks^2
+		specularCoeff *= specularCoeff; // ks^4
+		specularCoeff *= specularCoeff; // ks^8
+		specularCoeff *= specularCoeff; // ks^16
+		specularCoeff *= specularCoeff; // ks^32
+		specularCoeff *= specularCoeff; // ks^64
+
+		specular = specularCoeff * gSpecular;
+
+		phong += (diffuse + specular) * uLightCol[i];
+	}
+
 	// DUMMY OUTPUT: all fragments are OPAQUE CYAN (and others)
-	rtFragColor = vec4(0.0, 1.0, 1.0, 1.0);
-	rtDiffuseMapSample = vec4(0.0, 0.0, 1.0, 1.0);
+	rtFragColor = gNormal;
+	rtDiffuseMapSample = diffuse;
 	rtSpecularMapSample = vec4(0.0, 1.0, 0.0, 1.0);
 	rtDiffuseLightTotal = vec4(1.0, 0.0, 1.0, 1.0);
 	rtSpecularLightTotal = vec4(1.0, 1.0, 0.0, 1.0);
+}
+
+// Returns normalized light vector (L_hat)
+vec4 getNormalizedLight(vec4 lightPos, vec4 objPos)
+{
+	vec4 lightVec = lightPos - objPos;
+	return normalize(lightVec);
+}
+
+// Returns the dot product of the passed normal and light vector
+// Make sure to pass normalized values in
+float getDiffuseCoeff(vec4 normal, vec4 lightVector)
+{
+	return max(0.0, dot(normal, lightVector));
 }
