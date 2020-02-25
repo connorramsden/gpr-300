@@ -40,17 +40,40 @@
 
 // (2)
 in vbLightingData{
-	vec4 vViewPosition; q
+	vec4 vViewPosition;
 	vec4 vViewNormal;
 	vec4 vTexcoord;
 	vec4 vBiasedClipCoord;
 };
+
+// a3_DemoState_loading.c (lines ~754+)
+/*
+	uImage00 == uTex_dm
+	uImage01 == uTex_sm
+	uImage02 == uTex_nm
+	uImage03 == uTex_hm
+	uImage04 == uTex_dm_ramp
+	uImage05 == uTex_sm_ramp
+	uImage06 == uTex_shadow
+	uImage07 == uTex_proj
+*/
 
 layout (location = 0) out vec4 rtFragColor;
 layout (location = 4) out vec4 rtDiffuseMapSample;
 layout (location = 5) out vec4 rtSpecularMapSample;
 layout (location = 6) out vec4 rtDiffuseLightTotal;
 layout (location = 7) out vec4 rtSpecularLightTotal;
+
+// simple point light (modeled after a3_DemoPointLight)
+struct uPointLight
+{
+	vec4 worldPos;					// position in world space
+	vec4 viewPos;						// position in viewer space
+	vec4 color;						// RGB color with padding
+	float radius;						// radius (distance of effect from center)
+	float radiusInvSq;					// radius inverse squared (attenuation factor)
+	float pad[2];						// padding
+};
 
 void main()
 {

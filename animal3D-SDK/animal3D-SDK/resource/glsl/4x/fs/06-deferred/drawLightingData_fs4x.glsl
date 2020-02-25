@@ -46,7 +46,7 @@ layout (location = 3) out vec4 rtAtlasTexcoord;
 void main()
 {
 	// (3)	
-	rtViewPosition = vec4(vViewPosition.xyz, 1.0);
+	rtViewPosition = vec4(vViewPosition.xyz, 1.0); // Currently wrong, but not sure how to fix
 	rtViewNormal = normalize(vViewNormal);
 	rtAtlasTexcoord = vec4(vTexcoord.xyz, 1.0);
 }
