@@ -39,12 +39,7 @@
 //			-> surface texture coordinate is used as-is once sampled
 
 // (2)
-in vbLightingData {
-	vec4 vViewPosition;
-	vec4 vViewNormal;
-	vec4 vTexcoord;
-	vec4 vBiasedClipCoord;
-};
+
 
 // (1) a3_Demo_Pipelines_idle-render.c (lines 605-610)
 uniform sampler2D uImage00; // g-buffer depth texture (depth map)
@@ -67,6 +62,13 @@ layout (location = 4) out vec4 rtDiffuseMapSample;
 layout (location = 5) out vec4 rtSpecularMapSample;
 layout (location = 6) out vec4 rtDiffuseLightTotal;
 layout (location = 7) out vec4 rtSpecularLightTotal;
+
+in vbLightingData {
+	vec4 vViewPosition;
+	vec4 vViewNormal;
+	vec4 vTexcoord;
+	vec4 vBiasedClipCoord;
+};
 
 // Calculate diffuse coefficient based on surface normal & normalized light vector
 float diffuseCalculation(vec4 surfaceNormal, vec4 lightVector_n);
@@ -123,7 +125,7 @@ void main()
 	}	
 
 	// Output to render targets
-	rtFragColor = vec4(phong.xyz, 1.0);
+	rtFragColor = vec4(phong.xyz * diffuseSample.xyz, 1.0);
 	rtDiffuseMapSample = vec4(diffuseSample.xyz, 1.0);
 	rtSpecularMapSample = vec4(specularSample.xyz, 1.0);
 	rtDiffuseLightTotal = vec4(vec3(diffuseLightTotal), 1.0);
