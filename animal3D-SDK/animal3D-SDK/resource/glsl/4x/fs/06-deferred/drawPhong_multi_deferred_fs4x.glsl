@@ -39,27 +39,28 @@
 //			-> surface texture coordinate is used as-is once sampled
 
 // (2)
-in vbLightingData{
+in vbLightingData {
 	vec4 vViewPosition;
 	vec4 vViewNormal;
 	vec4 vTexcoord;
 	vec4 vBiasedClipCoord;
 };
 
+// (1) a3_Demo_Pipelines_idle-render.c (lines 605-610)
+uniform sampler2D uImage00; // g-buffer depth texture (depth map)
+uniform sampler2D uImage01; // g-buffer position (vViewPos)
+uniform sampler2D uImage02; // g-buffer normal (vViewNormal)
+uniform sampler2D uImage03; // g-buffer texcoord (vTexcoord)
+uniform sampler2D uImage04; // g-buffer uTex_dm
+uniform sampler2D uImage05; // g-buffer uTex_sm
+
+// (3)
+uniform mat4 uPB_inv;
+
 uniform int uLightCt;
 uniform vec4 uLightPos[MAX_LIGHTS];
 uniform vec4 uLightCol[MAX_LIGHTS];
 uniform float uLightSz[MAX_LIGHTS];
-
-// (1) a3_DemoState_loading.c (lines ~754+)
-uniform sampler2D uImage00; // uTex_dm
-uniform sampler2D uImage01; // uTex_sm
-uniform sampler2D uImage02; // uTex_nm
-uniform sampler2D uImage03; // uTex_hm
-uniform sampler2D uImage04; // uTex_dm_ramp
-uniform sampler2D uImage05; // uTex_sm_ramp
-uniform sampler2D uImage06; // uTex_shadow
-uniform sampler2D uImage07; // uTex_proj
 
 layout (location = 0) out vec4 rtFragColor;
 layout (location = 4) out vec4 rtDiffuseMapSample;
@@ -67,73 +68,90 @@ layout (location = 5) out vec4 rtSpecularMapSample;
 layout (location = 6) out vec4 rtDiffuseLightTotal;
 layout (location = 7) out vec4 rtSpecularLightTotal;
 
-// Returns normalized light vector
-vec4 getNormalizedLight(vec4 lightPos, vec4 objPos);
-// Returns the dot product of the passed normal and light vector
-float getDiffuseCoeff(vec4 normal, vec4 lightVector);
+// Calculate diffuse coefficient based on surface normal & normalized light vector
+float diffuseCalculation(vec4 surfaceNormal, vec4 lightVector_n);
+// Calculate specular coefficient based on surface normal, normalized light vector, and view position
+float specularCalculation(vec4 surfaceNormal, vec4 lightVector_n, vec4 viewPosition);
 
 void main()
 {
-	// Calculating gBuffers	
-	vec4 gTexcoord = texture(uImage03, vec2(vTexcoord));
-	vec4 gNormal = texture(uImage02, vec2(gTexcoord));
-
-	// Sample Albedos
-	vec4 gDiffuse = texture(uImage00, vec2(gTexcoord));
-	vec4 gSpecular = texture(uImage01, vec2(gTexcoord));
+	// (3) Sample geometric info from g-buffers
+	vec4 gPosition = texture(uImage01, vTexcoord.xy);
+	vec4 gNormal = texture(uImage02, vTexcoord.xy);
+	vec2 gTexcoord = texture(uImage03, vTexcoord.xy).xy; // Gets used as-is
+ 	
+	// (3) set up reverse perspective divide
+	gPosition *= uPB_inv;
+	// (3) perform reverse perspective divide
+	gPosition /= gPosition.w;
+	// (3) Expand range of normal sample
+	gNormal = (gNormal - 0.5) * 2.0;
 	
-	vec4 phong;
-	vec4 diffuse;
-	vec4 specular;
+	// Acquire diffuse & specular samples using g-buffer Texcoord
+	vec4 diffuseSample = texture(uImage04, gTexcoord);
+	vec4 specularSample = texture(uImage05, gTexcoord);
+	
+	// Set up phong for output
+	vec4 phong = vec4(0.0);
+	float diffuseLightTotal = 0.0;
+	float specularLightTotal = 0.0;
 
-	vec4 surfaceNorm = normalize(gNormal);
+	// Calculate surface normal (optimized, not in every loop)
+	vec4 surfaceNormal = normalize(gNormal);
 
-	for (int i = 0; i < uLightCt; ++i) {
-		vec4 lightNorm = getNormalizedLight(uLightPos[i], vViewPosition);
-
-		// Calculate diffuse coefficient
-		float diffuseCoeff = getDiffuseCoeff(surfaceNorm, lightNorm);
-
-		// Create the lambertian reflection from the diffuse coefficient and the diffuse texture
-		diffuse = diffuseCoeff * gDiffuse;
-
-		// Calculate reflected light value
-		vec4 reflection = 2.0 * diffuseCoeff * surfaceNorm - lightNorm;
-
-		// Calculate initial specular coefficient
-		float specularCoeff = max(0.0, dot(-normalize(vViewPosition), reflection));
+	for(int i = 0; i < uLightCt; ++i)
+	{
+		vec4 lightVector = vec4(vec3(uLightPos[i] - gPosition), 1.0);
+		vec4 lightVector_n = normalize(lightVector);
 		
-		// Exponentially increase specular coefficient
-		specularCoeff *= specularCoeff; // ks^2
-		specularCoeff *= specularCoeff; // ks^4
-		specularCoeff *= specularCoeff; // ks^8
-		specularCoeff *= specularCoeff; // ks^16
-		specularCoeff *= specularCoeff; // ks^32
-		specularCoeff *= specularCoeff; // ks^64
+		// Calculate diffuse coefficient
+		float diffuseCoeff = diffuseCalculation(surfaceNormal, lightVector_n);
+		// Update diffuse light total for eventual output
+		diffuseLightTotal += diffuseCoeff;
+		// Acquire final diffuse output
+		vec4 diffuse = diffuseCoeff * diffuseSample;
 
-		specular = specularCoeff * gSpecular;
+		// Calculate specular coefficient (already exponentially multiplied)
+		float specularCoeff = specularCalculation(surfaceNormal, lightVector_n, gPosition);
+		// Update specular light total for eventual output
+		specularLightTotal += specularCoeff;
+		// Acquire final specular output
+		vec4 specular = specularCoeff * specularSample;
 
+		// Update phong by new diffuse & specular calculations
 		phong += (diffuse + specular) * uLightCol[i];
-	}
+	}	
 
-	// DUMMY OUTPUT: all fragments are OPAQUE CYAN (and others)
-	rtFragColor = gNormal;
-	rtDiffuseMapSample = diffuse;
-	rtSpecularMapSample = vec4(0.0, 1.0, 0.0, 1.0);
-	rtDiffuseLightTotal = vec4(1.0, 0.0, 1.0, 1.0);
-	rtSpecularLightTotal = vec4(1.0, 1.0, 0.0, 1.0);
+	// Output to render targets
+	rtFragColor = vec4(phong.xyz, 1.0);
+	rtDiffuseMapSample = vec4(diffuseSample.xyz, 1.0);
+	rtSpecularMapSample = vec4(specularSample.xyz, 1.0);
+	rtDiffuseLightTotal = vec4(vec3(diffuseLightTotal), 1.0);
+	rtSpecularLightTotal = vec4(vec3(specularLightTotal), 1.0);
 }
 
-// Returns normalized light vector (L_hat)
-vec4 getNormalizedLight(vec4 lightPos, vec4 objPos)
+// Calculate diffuse coefficient based on surface normal & normalized light vector
+float diffuseCalculation(vec4 surfaceNormal, vec4 lightVector_n)
 {
-	vec4 lightVec = lightPos - objPos;
-	return normalize(lightVec);
+	float diffuseCoeff = max(0.0, dot(surfaceNormal, lightVector_n));;
+
+	return diffuseCoeff;
 }
 
-// Returns the dot product of the passed normal and light vector
-// Make sure to pass normalized values in
-float getDiffuseCoeff(vec4 normal, vec4 lightVector)
+// Calculate specular coefficient based on surface normal, normalized light vector, and view position
+float specularCalculation(vec4 surfaceNormal, vec4 lightVector_n, vec4 viewPosition)
 {
-	return max(0.0, dot(normal, lightVector));
+	vec4 reflection = vec4(reflect(lightVector_n, surfaceNormal).xyz, 1.0);
+
+	float specularCoeff = max(0.0, dot(normalize(viewPosition), reflection));
+	
+	// Exponentially increase specular coefficient
+	specularCoeff *= specularCoeff; // ks^2
+	specularCoeff *= specularCoeff; // ks^4
+	specularCoeff *= specularCoeff; // ks^8
+	specularCoeff *= specularCoeff; // ks^16
+	specularCoeff *= specularCoeff; // ks^32
+	specularCoeff *= specularCoeff; // ks^64
+
+	return specularCoeff;
 }
