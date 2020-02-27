@@ -29,14 +29,23 @@
 //	0) nothing
 
 layout (location = 0) in vec4 aPosition;
+layout (location = 2) in vec4 aNormal;
 layout (location = 8) in vec4 aTexcoord;
 
-uniform mat4 uMVP, uAtlas;
+uniform mat4 uMV, uP, uPB, uMV_nrm, uAtlas;
 
-out vec4 vTexcoord;
+out vbLightingData {
+	vec4 vViewPosition;
+	vec4 vViewNormal;
+	vec4 vTexcoord;
+	vec4 vBiasedClipCoord;
+};
 
 void main()
 {
-	gl_Position = uMVP * aPosition;
+	vViewPosition = uMV * aPosition;
+	vViewNormal = uMV_nrm * aNormal;
 	vTexcoord = uAtlas * aTexcoord;
+	vBiasedClipCoord = uPB * vViewPosition;
+	gl_Position = uP * vViewPosition;
 }
