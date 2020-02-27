@@ -40,6 +40,12 @@
 
 in vec4 vTexcoord;
 
+// (1) a3_Demo_Pipelines_idle-render.c (lines 605-610)
+uniform sampler2D uImage00; // g-buffer depth texture (uTex_dm)
+uniform sampler2D uImage01; // g-buffer position (vViewPos)
+uniform sampler2D uImage02; // g-buffer normal (vViewNormal)
+uniform sampler2D uImage03; // g-buffer texcoord (vTexcoord)
+
 layout (location = 0) out vec4 rtFragColor;
 layout (location = 4) out vec4 rtDiffuseMapSample;
 layout (location = 5) out vec4 rtSpecularMapSample;
@@ -48,6 +54,8 @@ layout (location = 7) out vec4 rtSpecularLightTotal;
 
 void main()
 {
+	
+
 	// DUMMY OUTPUT: all fragments are OPAQUE CYAN (and others)
 	rtFragColor = vec4(0.0, 1.0, 1.0, 1.0);
 	rtDiffuseMapSample = vec4(0.0, 0.0, 1.0, 1.0);
