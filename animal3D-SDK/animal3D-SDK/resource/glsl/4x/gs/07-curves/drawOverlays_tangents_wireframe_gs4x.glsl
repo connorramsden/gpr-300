@@ -28,10 +28,10 @@
 // (2 verts/axis * 3 axes/basis * (3 vertex bases + 1 face basis) + 4 or 8 wireframe verts = 28 or 32 verts)
 #define MAX_VERTICES 32
 
-// ****TO-DO: 
+// ****TO-DO:
 //	1) add input layout specifications
 //	2) receive varying data from vertex shader
-//	3) declare uniforms: 
+//	3) declare uniforms:
 //		-> projection matrix (inbound position is in view-space)
 //		-> optional: wireframe color (can hard-code)
 //		-> optional: size of tangent bases (ditto)
@@ -42,14 +42,16 @@
 //	7) draw wireframe
 
 // (1) layout qualifier for incoming primitive type
-layout (triangles) in;
+layout(triangles) in;
 
 // (2) Receiving varying data
-in vbVertexData {
+in vbVertexData
+{
 	mat4 vTangentBasis_view;
 	vec4 vTexcoord_atlas;
 	flat int vVertexID, vInstanceID, vModelID;
-} vVertexData[]; // give a name and make unsized array (this one has 3 elems b/c triangle)
+}
+vVertexData[]; // give a name and make unsized array (this one has 3 elems b/c triangle)
 
 // (3) Wireframe color
 uniform vec4 uColor;
@@ -62,16 +64,26 @@ uniform mat4 uP;
 
 // (4) Define primitive type we are outputting
 // Takes two parameters: output type, and num vertices to output
-layout (line_strip, max_vertices = MAX_VERTICES) out;
+layout(line_strip, max_vertices = MAX_VERTICES) out;
 
 // (5) Declare outbound color
 out vec4 vColor; // (taken from drawColorAttrib_fs4x.glsl)
 
+// Easy way to store red-green-blue for tangent line colors
+mat3 rgbMatrix = mat3(
+	1.0, 0.0, 0.0,
+	0.0, 1.0, 0.0,
+	0.0, 0.0, 1.0
+);
+
 // Converts triangles into lines
 void drawWireFrame()
-{	
+{
+	// Wireframe color
+	vColor = uColor;
+
 	// NOTE: EmitVertex(); == 'this vertex is done, ship it'
-	
+
 	gl_Position = gl_in[0].gl_Position; // set position to vertex[0]'s position
 	EmitVertex();
 	gl_Position = gl_in[1].gl_Position; // set position to vertex[0]'s position
@@ -89,24 +101,50 @@ void drawWireFrame()
 void drawTangentBases()
 {
 	// Perform operations on each vertex (we're dealing with triangles, hence 3)
-	for(int i = 0; i < 3; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
+		// Set up line color (rotates red->green->blue)
+		vColor = vec4(vec3(rgbMatrix[i]), 1.0);
+
+		// Borrowed from drawPhong_multi_forward_mrt_fs4x.glsl
+		// Calculated per-vertex & multiplied by the line-size
 		mat4 tangentBasis_view = mat4(
-		normalize(vVertexData[i].vTangentBasis_view[0]),
-		normalize(vVertexData[i].vTangentBasis_view[1]),
-		normalize(vVertexData[i].vTangentBasis_view[2]),
-		vVertexData[i].vTangentBasis_view[3]
-		);
+			normalize(vVertexData[i].vTangentBasis_view[0]) * uSize,
+			normalize(vVertexData[i].vTangentBasis_view[1]) * uSize,
+			normalize(vVertexData[i].vTangentBasis_view[2]) * uSize,
+			vVertexData[i].vTangentBasis_view[3]);
+
+		// Transform tangent basis' by the projection matrix
+		mat4 transformedTangent = uP * tangentBasis_view;
+
+		// Draw vertex
+		gl_Position = transformedTangent[3];
+		EmitVertex();
+
+		// Draw lines
+		gl_Position = transformedTangent[3] + transformedTangent[i];
+		EmitVertex();
+
+		// Ship vertices
+		EndPrimitive();
 	}
 }
 
 void main()
 {
-	vColor = uColor; // color of line to draw
-
-	if(uFlag == 2){
+	// Flags correlate to draw-state. 
+	// Utilized VS Debugger to find which states correlate to which flag
+	if (uFlag == 3)
+	{
 		drawWireFrame();
-	} else if(uFlag == 1) {
+		drawTangentBases();
+	}
+	else if (uFlag == 2)
+	{
+		drawWireFrame();
+	}
+	else if (uFlag == 1)
+	{
 		drawTangentBases();
 	}
 }
