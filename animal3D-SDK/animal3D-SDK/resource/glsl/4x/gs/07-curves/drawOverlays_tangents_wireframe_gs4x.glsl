@@ -41,7 +41,72 @@
 //	6) draw tangent bases
 //	7) draw wireframe
 
+// (1) layout qualifier for incoming primitive type
+layout (triangles) in;
+
+// (2) Receiving varying data
+in vbVertexData {
+	mat4 vTangentBasis_view;
+	vec4 vTexcoord_atlas;
+	flat int vVertexID, vInstanceID, vModelID;
+} vVertexData[]; // give a name and make unsized array (this one has 3 elems b/c triangle)
+
+// (3) Wireframe color
+uniform vec4 uColor;
+// (3) Size of Tangent Bases
+uniform float uSize;
+// (3) Overlay Flag
+uniform int uFlag; // 2 == WireFrame, 1 == Tangent Bases
+// (3) Projection Matrix
+uniform mat4 uP;
+
+// (4) Define primitive type we are outputting
+// Takes two parameters: output type, and num vertices to output
+layout (line_strip, max_vertices = MAX_VERTICES) out;
+
+// (5) Declare outbound color
+out vec4 vColor; // (taken from drawColorAttrib_fs4x.glsl)
+
+// Converts triangles into lines
+void drawWireFrame()
+{	
+	// NOTE: EmitVertex(); == 'this vertex is done, ship it'
+	
+	gl_Position = gl_in[0].gl_Position; // set position to vertex[0]'s position
+	EmitVertex();
+	gl_Position = gl_in[1].gl_Position; // set position to vertex[0]'s position
+	EmitVertex();
+	gl_Position = gl_in[2].gl_Position; // set position to vertex[0]'s position
+	EmitVertex();
+	gl_Position = gl_in[0].gl_Position; // set position to vertex[0]'s position
+	EmitVertex();
+	EndPrimitive(); // we have finished drawing sick shapes, don't draw anymore
+
+	// NOTHING DRAWS UNTIL YOU HAVE NUM VERTICES YOU NEED
+}
+
+// Converts triangles into tangent bases
+void drawTangentBases()
+{
+	// Perform operations on each vertex (we're dealing with triangles, hence 3)
+	for(int i = 0; i < 3; ++i)
+	{
+		mat4 tangentBasis_view = mat4(
+		normalize(vVertexData[i].vTangentBasis_view[0]),
+		normalize(vVertexData[i].vTangentBasis_view[1]),
+		normalize(vVertexData[i].vTangentBasis_view[2]),
+		vVertexData[i].vTangentBasis_view[3]
+		);
+	}
+}
+
 void main()
 {
-	
+	vColor = uColor; // color of line to draw
+
+	if(uFlag == 2){
+		drawWireFrame();
+	} else if(uFlag == 1) {
+		drawTangentBases();
+	}
 }
