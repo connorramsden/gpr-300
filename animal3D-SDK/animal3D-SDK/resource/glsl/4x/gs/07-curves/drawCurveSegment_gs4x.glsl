@@ -43,7 +43,38 @@
 //	6) write interpolation functions to help with sampling
 //	7) select curve type and sample over [0, 1] interval
 
+layout(lines_adjacency) in;
+
+// (3)
+uniform mat4 uMVP;
+uniform vec3 uColor = vec3(1.0,0.5,0.5);
+uniform int uCurveType = 0;
+
+// (4)
+layout(line_strip, max_vertices = MAX_VERTICES) out;
+
+out vec4 vColor;
+
+// (2) Receiving varying data
+in vbVertexData
+{
+	mat4 vTangentBasis_view;
+	vec4 vTexcoord_atlas;
+	flat int vVertexID, vInstanceID, vModelID;
+}
+vVertexData[]; 
+
 void main()
 {
-	
+	vColor = vec4(uColor, 1.0);
+
+	gl_Position = gl_in[0].gl_Position; // set position to vertex[0]'s position
+	EmitVertex();
+	gl_Position = gl_in[1].gl_Position; // set position to vertex[0]'s position
+	EmitVertex();
+	gl_Position = gl_in[2].gl_Position; // set position to vertex[0]'s position
+	EmitVertex();
+	gl_Position = gl_in[0].gl_Position; // set position to vertex[0]'s position
+	EmitVertex();
+	EndPrimitive(); // we have finished drawing sick shapes, don't draw anymore
 }
