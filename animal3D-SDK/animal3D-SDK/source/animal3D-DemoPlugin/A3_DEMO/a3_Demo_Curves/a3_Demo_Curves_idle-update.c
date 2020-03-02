@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_Demo_Curves_idle-update.c
 	Demo mode implementations: curves & interpolation update.
 
@@ -73,23 +73,39 @@ void a3curves_update(a3_DemoState* demoState, a3_Demo_Curves* demoMode, a3f64 dt
 	if (demoMode->interp)
 	{
 		a3ui32 k[4] = { 0 };
-	//	a3vec4 m[2] = { 0 };
+		//	a3vec4 m[2] = { 0 };
 
-		// ****TO-DO: 
-		//	-> update segment parameter
-		//		-> if animating, increment segment time in range [0, duration)
-		//		-> check if current segment time exceeded duration
-		//			-> correct segment time & index accordingly
-		//		-> update parameter in range [0, 1)
-		// update controller
+			// ****TO-DO 2.1: 
+			//	-> update segment parameter
+			//		-> if animating, increment segment time in range [0, duration)
+			//		-> check if current segment time exceeded duration
+			//			-> correct segment time & index accordingly
+			//		-> update parameter in range [0, 1)
+			// update controller
 
+		// Ensure we're animating
+		if (demoState->updateAnimation)
+		{
+			// Check if current segment time exceeded duration
+			if (demoState->segmentTime > demoState->segmentDuration)
+			{
+				// Reset segment time
+				demoState->segmentTime = 0.0f;
 
+				// Correct segment index accordingly
+				if (demoState->segmentIndex < demoState->segmentCount - 1)
+					demoState->segmentIndex++;
+				else
+					demoState->segmentIndex = 0;
+			}
+			else {
+				// Increment segment time by delta time
+				demoState->segmentTime += (a3real)dt;
+			}
 
-
-
-
-
-
+			// Scale parameter by segment length and inverse segment duration
+			demoState->segmentParam = demoState->segmentTime * demoState->segmentDurationInv;
+		}
 
 		// set key indices
 		k[0] = i = demoState->segmentIndex;
@@ -99,7 +115,7 @@ void a3curves_update(a3_DemoState* demoState, a3_Demo_Curves* demoMode, a3f64 dt
 
 		// ****TO-DO: 
 		//	-> uncomment interpolation
-		/*
+
 		// perform position interpolation on current segment
 		switch (demoMode->interp)
 		{
@@ -132,17 +148,17 @@ void a3curves_update(a3_DemoState* demoState, a3_Demo_Curves* demoMode, a3f64 dt
 				demoState->curveHandle[k[0]].v,
 				demoState->curveHandle[k[1]].v,
 				demoState->segmentParam);
-		//	a3real4Diff(m[0].v, demoState->curveHandle[k[0]].v, demoState->curveWaypoint[k[0]].v);
-		//	a3real4Diff(m[1].v, demoState->curveHandle[k[1]].v, demoState->curveWaypoint[k[1]].v);
-		//	a3real3HermiteTangent(demoState->sphereObject->position.v,
-		//		demoState->curveWaypoint[k[0]].v,
-		//		demoState->curveWaypoint[k[1]].v,
-		//		m[0].v,
-		//		m[1].v,
-		//		demoState->segmentParam);
+			//	a3real4Diff(m[0].v, demoState->curveHandle[k[0]].v, demoState->curveWaypoint[k[0]].v);
+			//	a3real4Diff(m[1].v, demoState->curveHandle[k[1]].v, demoState->curveWaypoint[k[1]].v);
+			//	a3real3HermiteTangent(demoState->sphereObject->position.v,
+			//		demoState->curveWaypoint[k[0]].v,
+			//		demoState->curveWaypoint[k[1]].v,
+			//		m[0].v,
+			//		m[1].v,
+			//		demoState->segmentParam);
 			break;
 		}
-		*/
+
 	}
 	else
 	{
