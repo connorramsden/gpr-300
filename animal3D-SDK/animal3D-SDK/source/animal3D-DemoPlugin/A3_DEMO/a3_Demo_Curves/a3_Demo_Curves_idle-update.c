@@ -86,21 +86,20 @@ void a3curves_update(a3_DemoState* demoState, a3_Demo_Curves* demoMode, a3f64 dt
 		// Ensure we're animating
 		if (demoState->updateAnimation)
 		{
+			// Increment segment time by delta time
+			demoState->segmentTime += (a3real)dt;
+
 			// Check if current segment time exceeded duration
-			if (demoState->segmentTime > demoState->segmentDuration)
+			if (demoState->segmentTime >= demoState->segmentDuration)
 			{
 				// Reset segment time
-				demoState->segmentTime = 0.0f;
+				demoState->segmentTime = demoState->segmentTime - demoState->segmentDuration;
 
 				// Correct segment index accordingly
 				if (demoState->segmentIndex < demoState->segmentCount - 1)
 					demoState->segmentIndex++;
 				else
 					demoState->segmentIndex = 0;
-			}
-			else {
-				// Increment segment time by delta time
-				demoState->segmentTime += (a3real)dt;
 			}
 
 			// Scale parameter by segment length and inverse segment duration
