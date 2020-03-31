@@ -478,14 +478,14 @@ void a3demo_loadShaders(a3_DemoState* demoState)
 			{ { { 0 },	"shdr-fs:draw-tex",					a3shader_fragment,	1,{ A3_DEMO_FS"02-shading/drawTexture_fs4x.glsl" } } },
 			{ { { 0 },	"shdr-fs:draw-Lambert-multi",		a3shader_fragment,	1,{ A3_DEMO_FS"02-shading/drawLambert_multi_fs4x.glsl" } } },
 			{ { { 0 },	"shdr-fs:draw-Phong-multi",			a3shader_fragment,	1,{ A3_DEMO_FS"02-shading/drawPhong_multi_fs4x.glsl" } } },
-			{ { { 0 },	"shdr-fs:draw-nonphoto-multi",		a3shader_fragment,	1,{ A3_DEMO_FS"02-shading/drawNonphoto_multi_fs4x.glsl" } } },
+			{ { { 0 },	"shdr-fs:draw-nonphoto-multi",		a3shader_fragment,	1,{ A3_DEMO_FS"08-midterm/drawPhong_textured_deter.glsl" } } },
 			// 03-framebuffer
 			{ { { 0 },	"shdr-fs:draw-tex-mrt",				a3shader_fragment,	1,{ A3_DEMO_FS"03-framebuffer/drawTexture_mrt_fs4x.glsl" } } },
 			{ { { 0 },	"shdr-fs:draw-tex-colormanip",		a3shader_fragment,	1,{ A3_DEMO_FS"03-framebuffer/drawTexture_colorManip_fs4x.glsl" } } },
 			{ { { 0 },	"shdr-fs:draw-tex-coordmanip",		a3shader_fragment,	1,{ A3_DEMO_FS"03-framebuffer/drawTexture_coordManip_fs4x.glsl" } } },
 			{ { { 0 },	"shdr-fs:draw-Lambert-multi-mrt",	a3shader_fragment,	1,{ A3_DEMO_FS"03-framebuffer/drawLambert_multi_mrt_fs4x.glsl" } } },
 			{ { { 0 },	"shdr-fs:draw-Phong-multi-mrt",		a3shader_fragment,	1,{ A3_DEMO_FS"03-framebuffer/drawPhong_multi_mrt_fs4x.glsl" } } },
-			{ { { 0 },	"shdr-fs:draw-nonphoto-multi-mrt",	a3shader_fragment,	1,{ A3_DEMO_FS"03-framebuffer/drawNonphoto_multi_mrt_fs4x.glsl" } } },
+			{ { { 0 },	"shdr-fs:draw-nonphoto-multi-mrt",	a3shader_fragment,	1,{ A3_DEMO_FS"08-midterm/drawPhong_textured_deter.glsl" } } },
 			// 04-multipass
 			{ { { 0 },	"shdr-fs:draw-tex-outline",			a3shader_fragment,	1,{ A3_DEMO_FS"04-multipass/drawTexture_outline_fs4x.glsl" } } },
 			{ { { 0 },	"shdr-fs:draw-Phong-multi-shadow",	a3shader_fragment,	1,{ A3_DEMO_FS"04-multipass/drawPhong_multi_shadow_mrt_fs4x.glsl" } } },
