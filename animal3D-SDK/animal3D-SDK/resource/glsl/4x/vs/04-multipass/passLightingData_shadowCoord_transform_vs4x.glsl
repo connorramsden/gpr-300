@@ -41,6 +41,7 @@ uniform mat4 uP;
 uniform mat4 uMV_nrm;
 uniform mat4 uAtlas; 
 uniform mat4 uMVPB_other; // Step 1
+uniform double uTime;
 
 out vec4 vViewPos; 
 out vec4 vModelViewNorm;
@@ -49,9 +50,10 @@ out vec4 vShadowCoord; // Step 2
 
 void main()
 {
+	float time = float(uTime);
 	vViewPos = uMV * aPosition;
 	vModelViewNorm = uMV_nrm * normal;
 	vTexCoord = vec2(uAtlas * aTexCoord);
-	gl_Position = uP * vViewPos;	
+	gl_Position = uP * vViewPos + vec4(sin(time) * sin(aPosition.z * 8.0), 0.0, 0.0,0.0);	
 	vShadowCoord = uMVPB_other * aPosition; // Step 3
 }
