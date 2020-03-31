@@ -47,12 +47,20 @@ uniform vec4 uLightPos[MAX_LIGHTS];
 uniform vec4 uLightCol[MAX_LIGHTS];
 uniform float uLightSz[MAX_LIGHTS];
 
+uniform double uTime;
+
+uniform float perlinSize = 1.0;
+
 layout(location = 0) out vec4 rtFragColor;
 
 // Returns normalized light vector
 vec4 getNormalizedLight(vec4 lightPos, vec4 objPos);
 // Returns the dot product of the passed normal and light vector
 float getDiffuseCoeff(vec4 normal, vec4 lightVector);
+
+float rand2D(in vec2 co);
+float rand3D(in vec3 co);
+float noise (in vec2 st);
 
 void main()
 {
@@ -100,7 +108,15 @@ void main()
 
 		phong += (lambert + specular) * uLightCol[i];
 	}
-	rtFragColor = vec4(phong.xyz, 1.0);
+	float time = (cos(float(uTime)) + 1.0);
+	float n = noise(vTexCoord.xy * (20.0) * (1.0 + (time * 0.1)));
+
+    float burnAmount = n;
+	phong.r =  clamp(phong.r * time, phong.r, 1.0);
+	vec3 color = vec3(clamp(clamp(phong.r * 3.0, 0, 1) * burnAmount, phong.r, 1.0), phong.g * (1.0 - burnAmount), phong.b * (1.0 - burnAmount));
+
+    rtFragColor = vec4(color, 1.0);
+	//rtFragColor = vec4(phong.xyz, 1.0);
 }
 
 // Returns normalized light vector (L_hat)
@@ -116,3 +132,52 @@ float getDiffuseCoeff(vec4 normal, vec4 lightVector)
 {
 	return max(0.0, dot(normal, lightVector));
 }
+
+
+
+//http://www.science-and-fiction.org/rendering/noise.html
+float rand2D(in vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+float rand3D(in vec3 co){
+    return fract(sin(dot(co.xyz ,vec3(12.9898,78.233,144.7272))) * 43758.5453);
+}
+
+float noise (in vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+
+    // Four corners in 2D of a tile
+    float a = rand2D(i + vec2(-perlinSize * 0.5, -perlinSize * 0.5));
+    float b = rand2D(i + vec2(perlinSize * 0.5, -perlinSize * 0.5));
+    float c = rand2D(i + vec2(-perlinSize * 0.5, perlinSize * 0.5));
+    float d = rand2D(i + vec2(perlinSize * 0.5, perlinSize * 0.5));
+
+    // Smooth Interpolation
+
+    // Cubic Hermine Curve.  Same as SmoothStep()
+    vec2 u = f*f*(3.0-2.0*f);
+    // u = smoothstep(0.,1.,f);
+
+    // Mix 4 coorners percentages
+    return mix(a, b, u.x) +
+            (c - a)* u.y * (1.0 - u.x) +
+            (d - b) * u.x * u.y;
+}
+/*
+
+void main()
+{
+	// DUMMY OUTPUT: all fragments are OPAQUE GREEN
+    float n = noise(vTexCoord.xy * 20.0 + sin(float(uTime)) );
+	vec3 color = texture(uTex_dm, vTexCoord).xyz;
+    float time = (cos(float(uTime)) + 1.0);
+    float burnAmount = n * time;
+    color = vec3(clamp(clamp(color.r * 3.0, 0, 1) * burnAmount, color.r, 1.0), color.g * (1.0 - burnAmount) * (1.0-time), color.b * (1.0 - burnAmount) * (1.0-time));
+
+    rtFragColor = vec4(color, 1.0);
+    //rtFragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    //rtFragColor = vec4(1.0 * n, 0.0,0.0,1.0);
+}
+*/
+
