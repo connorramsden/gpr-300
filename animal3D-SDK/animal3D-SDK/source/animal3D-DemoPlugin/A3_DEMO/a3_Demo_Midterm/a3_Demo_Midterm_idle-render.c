@@ -81,7 +81,7 @@ void a3midterm_render_controls(a3_DemoState const* demoState, a3_Demo_Midterm co
 		"Texturing",
 		"Lambert shading",
 		"Phong shading",
-		"Nonphotorealistic shading",
+		"Lava Lamp Effect",
 	};
 
 	// forward display names
@@ -192,13 +192,13 @@ void a3midterm_render(a3_DemoState const* demoState, a3_Demo_Midterm const* demo
 			demoState->prog_drawTexture,
 			demoState->prog_drawLambert_multi,
 			demoState->prog_drawPhong_multi,
-			demoState->prog_drawNonphoto_multi,
+			demoState->prog_drawPhong_deter,
 		}, {
 			demoState->prog_drawColorUnif,
 			demoState->prog_drawTexture_mrt,
 			demoState->prog_drawLambert_multi_mrt,
 			demoState->prog_drawPhong_multi_mrt,
-			demoState->prog_drawNonphoto_multi_mrt,
+			demoState->prog_drawPhong_deter,
 		},
 	};
 
