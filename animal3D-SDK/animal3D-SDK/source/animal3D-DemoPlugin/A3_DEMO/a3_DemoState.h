@@ -45,6 +45,7 @@
 
 #include "a3_Demo_Shading.h"
 #include "a3_Demo_Pipelines.h"
+#include "a3_Demo_Midterm.h"
 
 
 //-----------------------------------------------------------------------------
@@ -66,6 +67,7 @@ extern "C"
 	{
 		demoState_shading,				// basic shading mode
 		demoState_pipelines,			// different pipelines for exploration
+		demoState_midterm,
 
 		demoState_mode_max
 	};
@@ -156,6 +158,8 @@ extern "C"
 		// demo modes
 		a3_Demo_Shading demoMode_shading[1];
 		a3_Demo_Pipelines demoMode_pipelines[1];
+		a3_Demo_Midterm demoMode_midterm[1];
+
 		a3_DemoState_ModeName demoMode;
 
 		// cameras
@@ -309,6 +313,8 @@ extern "C"
 					prog_drawTexture_brightPass[1],				// draw texture with bright-pass or tone-mapping
 					prog_drawTexture_blurGaussian[1],			// draw texture with Gaussian blurring
 					prog_drawTexture_blendScreen4[1];			// draw texture with 4-layer screen blend
+				a3_DemoStateShaderProgram
+					prog_drawPhong_deter[1];
 			};
 		};
 

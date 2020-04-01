@@ -88,6 +88,9 @@
     <Filter Include="Resource Files\A3_DEMO\glsl\4x\fs\05-bloom">
       <UniqueIdentifier>{88ed4d72-5ae5-4ca4-85e9-35032beb7e0f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common\A3_DEMO\a3_Demo_Midterm">
+      <UniqueIdentifier>{3b0bdc27-43c6-42ce-b5cf-444c311aff74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src_win\main_dll.c">
@@ -138,6 +141,15 @@
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_Demo_Pipelines\a3_Demo_Pipelines_initialize.c">
       <Filter>Source Files\common\A3_DEMO\a3_Demo_Pipelines</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_Demo_Midterm\a3_Demo_Midterm_idle-input.c">
+      <Filter>Source Files\common\A3_DEMO\a3_Demo_Midterm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_Demo_Midterm\a3_Demo_Midterm_idle-render.c">
+      <Filter>Source Files\common\A3_DEMO\a3_Demo_Midterm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_Demo_Midterm\a3_Demo_Midterm_initialize.c">
+      <Filter>Source Files\common\A3_DEMO\a3_Demo_Midterm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoState.h">
@@ -162,6 +174,9 @@
       <Filter>Header Files\A3_DEMO</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_Demo_Pipelines.h">
+      <Filter>Header Files\A3_DEMO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_Demo_Midterm.h">
       <Filter>Header Files\A3_DEMO</Filter>
     </ClInclude>
   </ItemGroup>

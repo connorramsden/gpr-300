@@ -127,6 +127,9 @@ void a3demo_input(a3_DemoState *demoState, a3f64 dt)
 	case demoState_pipelines:
 		demoState->activeCamera = demoState->demoMode_pipelines->activeCamera;
 		break;
+	case demoState_midterm:
+		demoState->activeCamera = demoState->demoMode_midterm->activeCamera;
+		break;
 	}
 }
 
@@ -137,6 +140,7 @@ void a3demo_input(a3_DemoState *demoState, a3f64 dt)
 // demo mode callbacks
 void a3shadingCB_input_keyCharPress(a3_DemoState const* demoState, a3_Demo_Shading* demoMode, a3i32 asciiKey);
 void a3pipelinesCB_input_keyCharPress(a3_DemoState const* demoState, a3_Demo_Pipelines* demoMode, a3i32 asciiKey);
+void a3midtermCB_input_keyCharPress(a3_DemoState const* demoState, a3_Demo_Midterm* demoMode, a3i32 asciiKey);
 
 // ascii key callback
 void a3demoCB_input_keyCharPress(a3_DemoState* demoState, a3i32 asciiKey)
@@ -192,6 +196,9 @@ void a3demoCB_input_keyCharPress(a3_DemoState* demoState, a3i32 asciiKey)
 		break;
 	case demoState_pipelines:
 		a3pipelinesCB_input_keyCharPress(demoState, demoState->demoMode_pipelines, asciiKey);
+		break;
+	case demoState_midterm:
+		a3midtermCB_input_keyCharPress(demoState, demoState->demoMode_midterm, asciiKey);
 		break;
 	}
 }
