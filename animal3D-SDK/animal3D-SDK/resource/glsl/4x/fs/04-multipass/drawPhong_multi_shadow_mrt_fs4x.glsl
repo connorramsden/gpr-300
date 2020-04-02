@@ -42,6 +42,7 @@ in vec4 vShadowCoord; // Step 1
 uniform sampler2D uTex_dm;
 uniform sampler2D uTex_sm;
 uniform sampler2D uTex_shadow; // Step 3
+uniform sampler2D uImage07;
 uniform int uLightCt;
 uniform vec4 uLightPos[MAX_LIGHTS];
 uniform vec4 uLightCol[MAX_LIGHTS];
@@ -66,6 +67,7 @@ void main()
 {
 	vec4 texDiffuse = texture2D(uTex_dm, vTexCoord);
 	vec4 texSpecular = texture2D(uTex_sm, vTexCoord);
+	vec4 texTest = texture2D(uImage07, vTexCoord);
 
 	vec4 phong;
 

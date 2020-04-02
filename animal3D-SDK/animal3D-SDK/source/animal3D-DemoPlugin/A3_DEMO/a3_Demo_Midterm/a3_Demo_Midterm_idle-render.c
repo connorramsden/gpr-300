@@ -77,11 +77,11 @@ void a3midterm_render_controls(a3_DemoState const* demoState, a3_Demo_Midterm co
 
 	// forward pipeline names
 	a3byte const* renderProgramName[midterm_render_max] = {
-		"Solid color",
-		"Texturing",
-		"Lambert shading",
-		"Phong shading",
 		"Lava Lamp Effect",
+		"TEMP TITLE 01",
+		"TEMP TITLE 02",
+		"TEMP TITLE 03",
+		"TEMP TITLE 04",
 	};
 
 	// forward display names
@@ -176,6 +176,7 @@ void a3midterm_render(a3_DemoState const* demoState, a3_Demo_Midterm const* demo
 		demoState->tex_stone_dm,
 		demoState->tex_mars_dm,
 		demoState->tex_checker,
+		demoState->tex_fabric
 	};
 	const a3_Texture* texture_sm[] = {
 		demoState->tex_stone_dm,
@@ -183,22 +184,23 @@ void a3midterm_render(a3_DemoState const* demoState, a3_Demo_Midterm const* demo
 		demoState->tex_stone_dm,
 		demoState->tex_mars_sm,
 		demoState->tex_checker,
+		demoState->tex_fabric
 	};
 
 	// forward pipeline shader programs
 	const a3_DemoStateShaderProgram* renderProgram[midterm_pipeline_max][midterm_render_max] = {
 		{
+			demoState->prog_drawPhong_deter,
 			demoState->prog_drawColorUnif,
 			demoState->prog_drawTexture,
 			demoState->prog_drawLambert_multi,
 			demoState->prog_drawPhong_multi,
-			demoState->prog_drawPhong_deter,
 		}, {
+			demoState->prog_drawPhong_deter,
 			demoState->prog_drawColorUnif,
 			demoState->prog_drawTexture_mrt,
 			demoState->prog_drawLambert_multi_mrt,
 			demoState->prog_drawPhong_multi_mrt,
-			demoState->prog_drawPhong_deter,
 		},
 	};
 
@@ -326,6 +328,7 @@ void a3midterm_render(a3_DemoState const* demoState, a3_Demo_Midterm const* demo
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uLightCol, demoState->forwardLightCount, lightCol->v);
 			a3textureActivate(demoState->tex_ramp_dm, a3tex_unit04);
 			a3textureActivate(demoState->tex_ramp_sm, a3tex_unit05);
+			a3textureActivate(demoState->tex_fabric, a3tex_unit07);
 
 			// individual object requirements: 
 			//	- modelviewprojection
@@ -345,7 +348,6 @@ void a3midterm_render(a3_DemoState const* demoState, a3_Demo_Midterm const* demo
 			// end geometry pass
 		}
 	}
-
 
 	// stop using stencil
 	if (demoState->stencilTest)
