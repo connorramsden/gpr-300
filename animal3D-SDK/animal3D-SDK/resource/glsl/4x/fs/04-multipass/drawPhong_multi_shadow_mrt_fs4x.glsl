@@ -62,12 +62,15 @@ float getDiffuseCoeff(vec4 normal, vec4 lightVector);
 float rand2D(in vec2 co);
 float rand3D(in vec3 co);
 float noise (in vec2 st);
+float getBrightness(in vec3 col)
+{
+return (col.r * 0.299) + (0.587 * col.g) + (col.b * 0.114);
+}
 
 void main()
 {
 	vec4 texDiffuse = texture2D(uTex_dm, vTexCoord);
 	vec4 texSpecular = texture2D(uTex_sm, vTexCoord);
-	vec4 texTest = texture2D(uImage07, vTexCoord);
 
 	vec4 phong;
 
@@ -114,12 +117,15 @@ void main()
 	float n = noise(vTexCoord.xy * (20.0) * (1.0 + (time * 0.1)));
 
     float burnAmount = n;
-	phong.r =  clamp(phong.r * time, phong.r, 1.0);
-	vec3 color = vec3(clamp(clamp(phong.r * 3.0, 0, 1) * burnAmount, phong.r, 1.0), phong.g * (1.0 - burnAmount), phong.b * (1.0 - burnAmount));
-
+	//phong.r =  clamp(phong.r * time, phong.r, 1.0);
+	//vec3 color = vec3(clamp(clamp(phong.r * 3.0, 0, 1) * burnAmount, phong.r, 1.0), phong.g * (1.0 - burnAmount), phong.b * (1.0 - burnAmount));
+	vec3 color = texture(uImage07, vTexCoord * 8.0).xyz;
+	color = mix(phong.xyz, color, noise(vTexCoord * 10.0) * getBrightness(color));
     rtFragColor = vec4(color, 1.0);
 	//rtFragColor = vec4(phong.xyz, 1.0);
 }
+
+
 
 // Returns normalized light vector (L_hat)
 vec4 getNormalizedLight(vec4 lightPos, vec4 objPos)
