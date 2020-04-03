@@ -222,6 +222,8 @@ void a3demo_update(a3_DemoState *demoState, a3f64 dt)
 		break;
 	case demoState_pipelines:
 		break;
+	case demoState_midterm:
+		break;
 	}
 }
 
