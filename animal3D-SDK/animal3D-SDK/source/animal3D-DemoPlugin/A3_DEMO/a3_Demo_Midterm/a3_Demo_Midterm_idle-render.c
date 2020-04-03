@@ -78,7 +78,7 @@ void a3midterm_render_controls(a3_DemoState const* demoState, a3_Demo_Midterm co
 	// forward pipeline names
 	a3byte const* renderProgramName[midterm_render_max] = {
 		"Lava Lamp Effect",
-		"TEMP TITLE 01",
+		"Fabric Effect",
 		"TEMP TITLE 02",
 		"TEMP TITLE 03",
 		"TEMP TITLE 04",
@@ -190,15 +190,15 @@ void a3midterm_render(a3_DemoState const* demoState, a3_Demo_Midterm const* demo
 	// forward pipeline shader programs
 	const a3_DemoStateShaderProgram* renderProgram[midterm_pipeline_max][midterm_render_max] = {
 		{
-			demoState->prog_drawPhong_deter,
+			demoState->prog_drawPhong_lavalamp,
+			demoState->prog_drawPhong_fabric,
 			demoState->prog_drawColorUnif,
-			demoState->prog_drawTexture,
 			demoState->prog_drawLambert_multi,
 			demoState->prog_drawPhong_multi,
 		}, {
-			demoState->prog_drawPhong_deter,
+			demoState->prog_drawPhong_lavalamp,
+			demoState->prog_drawPhong_fabric,
 			demoState->prog_drawColorUnif,
-			demoState->prog_drawTexture_mrt,
 			demoState->prog_drawLambert_multi_mrt,
 			demoState->prog_drawPhong_multi_mrt,
 		},

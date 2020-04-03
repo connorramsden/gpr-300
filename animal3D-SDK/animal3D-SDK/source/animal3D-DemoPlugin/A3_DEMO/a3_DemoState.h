@@ -314,7 +314,8 @@ extern "C"
 					prog_drawTexture_blurGaussian[1],			// draw texture with Gaussian blurring
 					prog_drawTexture_blendScreen4[1];			// draw texture with 4-layer screen blend
 				a3_DemoStateShaderProgram
-					prog_drawPhong_deter[1];
+					prog_drawPhong_lavalamp[1],
+					prog_drawPhong_fabric[1];
 			};
 		};
 

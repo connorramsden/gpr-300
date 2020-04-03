@@ -421,6 +421,9 @@ void a3demo_loadShaders(a3_DemoState* demoState)
 			// 04-multipass
 			a3_DemoStateShader
 				passLightingData_shadowCoord_transform_vs[1];
+			a3_DemoStateShader
+				passLightingData_lavalamp_vs[1],
+				passLightingData_fabric_vs[1];
 
 			// fragment shaders
 			// base
@@ -452,7 +455,8 @@ void a3demo_loadShaders(a3_DemoState* demoState)
 				drawTexture_blendScreen4_fs[1];
 			// Midterm
 			a3_DemoStateShader
-				drawPhong_deter[1];
+				drawPhong_lavalamp[1],
+				drawPhong_fabric[1];
 		};
 	} shaderList = {
 		{
@@ -472,6 +476,9 @@ void a3demo_loadShaders(a3_DemoState* demoState)
 			{ { { 0 },	"shdr-vs:pass-light-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"02-shading/passLightingData_transform_vs4x.glsl" } } },
 			// 04-multipass
 			{ { { 0 },	"shdr-vs:pass-light-shadow-trans",	a3shader_vertex  ,	1,{ A3_DEMO_VS"04-multipass/passLightingData_shadowCoord_transform_vs4x.glsl" } } },
+			// Midterm
+			{ { { 0 },	"shdr-vs:pass-light-lavalamp",		a3shader_vertex  ,	1,{ A3_DEMO_VS"08-midterm/passLightingData_lavalamp_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:pass-light-fabric",		a3shader_vertex  ,	1,{ A3_DEMO_VS"08-midterm/passLightingData_fabric_vs4x.glsl" } } },
 
 			// fs
 			// base
@@ -498,7 +505,8 @@ void a3demo_loadShaders(a3_DemoState* demoState)
 			{ { { 0 },	"shdr-fs:draw-tex-blend4",			a3shader_fragment,	1,{ A3_DEMO_FS"05-bloom/drawTexture_blendScreen4_fs4x.glsl" } } },
 
 			// Midterm
-			{ { { 0 },	"shdr-fs:draw-phong-deter",			a3shader_fragment,	1,{ A3_DEMO_FS"04-multipass/drawPhong_multi_shadow_mrt_fs4x.glsl" } } },
+			{ { { 0 },	"shdr-fs:draw-phong-lavalamp",		a3shader_fragment,	1,{ A3_DEMO_FS"08-midterm/drawPhong_lavalamp_fs4x.glsl" } } },
+			{ { { 0 },	"shdr-fs:draw-phong-fabric",		a3shader_fragment,	1,{ A3_DEMO_FS"08-midterm/drawPhong_fabric_fs4x.glsl" } } },
 		}
 	};
 	a3_DemoStateShader* const shaderListPtr = (a3_DemoStateShader*)(&shaderList), * shaderPtr;
@@ -652,10 +660,14 @@ void a3demo_loadShaders(a3_DemoState* demoState)
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_blendScreen4_fs->shader);
 
 	// Midterm Shader Initialization
-	currentDemoProg = demoState->prog_drawPhong_deter;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-phong-deter"); 
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_shadowCoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_deter->shader);
+	currentDemoProg = demoState->prog_drawPhong_lavalamp;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-phong-lavalamp"); 
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_lavalamp_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_lavalamp->shader);
+	currentDemoProg = demoState->prog_drawPhong_fabric;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-phong-fabric"); 
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_fabric_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_fabric->shader);
 
 
 
