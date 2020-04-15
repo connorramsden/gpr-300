@@ -77,6 +77,7 @@
 #include "../a3_DemoState.h"
 
 #include <stdio.h>
+#include <A3_DEMO/a3_DemoStateModern/shader.h>
 
 
 //-----------------------------------------------------------------------------
@@ -377,6 +378,11 @@ void a3demo_loadGeometry(a3_DemoState* demoState)
 	a3demo_initDummyDrawable_internal(demoState);
 }
 
+///LOOK AT ME
+//extern "C++" void loadShadersModern(a3_DemoState* demoState, Sha)
+//convert the c++ class to c accessible, after setting all the information, then call loadShader in C
+//we could insert a simple c++ interface that would still run mostly in c by organizing the information in the shader
+
 
 // utility to load shaders
 void a3demo_loadShaders(a3_DemoState* demoState)
@@ -400,6 +406,8 @@ void a3demo_loadShaders(a3_DemoState* demoState)
 		a3tex_unit12, a3tex_unit13, a3tex_unit14, a3tex_unit15
 	};
 
+	// LOOK AT ME HERE
+	
 
 	// list of all unique shaders
 	// this is a good idea to avoid multi-loading 
