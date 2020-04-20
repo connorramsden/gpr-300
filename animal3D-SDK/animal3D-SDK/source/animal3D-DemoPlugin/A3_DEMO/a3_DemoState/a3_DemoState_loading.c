@@ -385,6 +385,10 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 //convert the c++ class to c accessible, after setting all the information, then call loadShader in C
 //we could insert a simple c++ interface that would still run mostly in c by organizing the information in the shader
 
+extern void loadShadersRedux(a3_DemoState* demoState, Shader shaderToLoad) {
+
+}
+
 
 // utility to load shaders
 void a3demo_loadShaders(a3_DemoState *demoState)
