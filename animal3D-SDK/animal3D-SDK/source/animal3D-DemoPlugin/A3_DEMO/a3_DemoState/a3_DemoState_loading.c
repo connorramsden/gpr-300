@@ -571,7 +571,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			printf("\n ^^^^ SHADER %u '%s' FAILED TO COMPILE \n\n", i, shaderPtr->shader->handle->name);
 	}
 
-	currentDemoProg = demoState->prog_transform;
+	/*
 	struct 
 	{
 		a3_DemoStateShaderProgram* program;
@@ -580,12 +580,12 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 		char* m_ShaderName;
 	} programList[3] =
 	{
-		{ demoState->prog_transform, shaderList.passthru_transform_vs, NULL, "prog:transform" }
+		{ demoState->prog_transform, shaderList.passthru_transform_vs, NULL, "prog:transform" },
 		//{ "prog:transform", NULL, shaderList.passthru_transform_vs, demoState->prog_transform }
 		{ demoState->prog_transform_instanced, NULL, shaderList.passthru_transform_instanced_vs, "prog:transform-inst" },
-		{ demoState->prog_drawColorUnif, shaderList.drawColorUnif_fs->shader, shaderList.passthru_transform_vs->shader, "prog:draw-col-unif" },
+		{ demoState->prog_drawColorUnif, shaderList.drawColorUnif_fs->shader, shaderList.passthru_transform_vs->shader, "prog:draw-col-unif" }
 	};
-
+	*/
 	// setup programs: 
 	//	- create program object
 	//	- attach shader objects

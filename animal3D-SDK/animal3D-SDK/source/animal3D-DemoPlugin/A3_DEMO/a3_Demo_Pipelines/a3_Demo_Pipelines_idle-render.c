@@ -216,6 +216,35 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	// current scene object being rendered, for convenience
 	const a3_DemoSceneObject* currentSceneObject, * endSceneObject;
 
+	//LOOK AT ME  - JAKE
+	typedef struct 
+	{
+		const a3_Texture* tex_dm;
+		const a3_Texture* tex_sm;
+		const a3mat4* atlas;
+	} JTexture;
+
+	const JTexture textures[] =
+	{
+		{demoState->tex_stone_dm, demoState->tex_stone_dm, demoState->atlas_stone },
+		{demoState->tex_mars_dm, demoState->tex_mars_sm, demoState->atlas_mars },
+		{demoState->tex_checker, demoState->tex_checker, demoState->atlas_checker }
+	};
+
+	typedef struct
+	{
+		const a3_DemoSceneObject* obj;
+		const a3_VertexDrawable* mesh;
+		const JTexture* texture;
+	} SceneModel;
+
+	const SceneModel models[] = {
+		{demoState->planeObject, demoState->draw_plane, &textures[0]}
+	};
+
+	a3ui32 modelCount = sizeof(models) / sizeof(SceneModel); //just an uint, but animal 3d specific
+
+	/*
 	// temp drawable pointers
 	const a3_VertexDrawable* drawable[] = {
 		demoState->draw_plane,
@@ -249,6 +278,10 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		demoState->atlas_mars,
 		demoState->atlas_checker,
 	};
+	*/
+
+	
+
 
 	// forward pipeline shader programs
 	const a3_DemoStateShaderProgram* renderProgram[pipelines_pipeline_max][pipelines_render_max] = {
@@ -380,11 +413,12 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	glCullFace(GL_FRONT);
 	currentDemoProgram = demoState->prog_transform;
 	a3shaderProgramActivate(currentDemoProgram->program);
-	for (k = 0,
-		currentSceneObject = demoState->planeObject, endSceneObject = demoState->teapotObject;
-		currentSceneObject <= endSceneObject;
-		++k, ++currentSceneObject)
-		a3demo_drawModelSimple_activateModel(modelViewProjectionMat.m, activeShadowCaster->viewProjectionMat.m, currentSceneObject->modelMat.m, currentDemoProgram, drawable[k]);
+	//changed this loop - JAKE
+	for (k = 0; k < modelCount; k++)
+	{
+		a3demo_drawModelSimple_activateModel(modelViewProjectionMat.m, activeShadowCaster->viewProjectionMat.m, models[k].obj->modelMat.m, currentDemoProgram, models[k].mesh);
+	}
+		
 	glCullFace(GL_BACK);
 
 
@@ -472,14 +506,11 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		//	- modelview
 		//	- modelview for normals
 		//	- per-object animation data
-		for (k = 0,
-			currentSceneObject = demoState->planeObject, endSceneObject = demoState->teapotObject;
-			currentSceneObject <= endSceneObject;
-			++k, ++currentSceneObject)
+		for (k = 0; k < modelCount; k++)
 		{
-			a3textureActivate(texture_dm[k], a3tex_unit00);
-			a3textureActivate(texture_sm[k], a3tex_unit01);
-			a3demo_drawModelLighting_bias_other(modelViewProjectionBiasMat_other.m, modelViewProjectionMat.m, modelViewMat.m, viewProjectionBiasMat_other.m, viewProjectionMat.m, viewMat.m, currentSceneObject->modelMat.m, currentDemoProgram, drawable[k], rgba4[k + 3].v);
+			a3textureActivate(models[k].texture->tex_dm, a3tex_unit00);
+			a3textureActivate(models[k].texture->tex_sm, a3tex_unit01);
+			a3demo_drawModelLighting_bias_other(modelViewProjectionBiasMat_other.m, modelViewProjectionMat.m, modelViewMat.m, viewProjectionBiasMat_other.m, viewProjectionMat.m, viewMat.m, models[k].obj->modelMat.m, currentDemoProgram, models[k].mesh, rgba4[k + 3].v);
 		}
 	}	break;
 		// end forward scene pass
@@ -487,13 +518,10 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		// scene pass using deferred shading
 	case pipelines_deferred_shading: {
 		// draw objects as-is
-		for (k = 0,
-			currentSceneObject = demoState->planeObject, endSceneObject = demoState->teapotObject;
-			currentSceneObject <= endSceneObject;
-			++k, ++currentSceneObject)
+		for (k = 0; k < modelCount; k++)
 		{
-			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, atlas[k]->mm);
-			a3demo_drawModelLighting(modelViewProjectionMat.m, modelViewMat.m, viewProjectionMat.m, viewMat.m, currentSceneObject->modelMat.m, currentDemoProgram, drawable[k], rgba4[k + 3].v);
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, textures[k].atlas->mm);
+			a3demo_drawModelLighting(modelViewProjectionMat.m, modelViewMat.m, viewProjectionMat.m, viewMat.m, models[k].obj->modelMat.m, currentDemoProgram, models[k].mesh, rgba4[k + 3].v);
 		}
 	}	break;
 		// end deferred shading scene pass
@@ -501,13 +529,10 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		// scene pass using deferred lighting
 	case pipelines_deferred_lighting: {
 		// same as above
-		for (k = 0,
-			currentSceneObject = demoState->planeObject, endSceneObject = demoState->teapotObject;
-			currentSceneObject <= endSceneObject;
-			++k, ++currentSceneObject)
+		for (k = 0; k < modelCount; k++)
 		{
-			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, atlas[k]->mm);
-			a3demo_drawModelLighting(modelViewProjectionMat.m, modelViewMat.m, viewProjectionMat.m, viewMat.m, currentSceneObject->modelMat.m, currentDemoProgram, drawable[k], rgba4[k + 3].v);
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, textures[k].atlas->mm);
+			a3demo_drawModelLighting(modelViewProjectionMat.m, modelViewMat.m, viewProjectionMat.m, viewMat.m, models[k].obj->modelMat.m, currentDemoProgram, models[k].mesh, rgba4[k + 3].v);
 		}
 
 		// move on to light pre-pass
