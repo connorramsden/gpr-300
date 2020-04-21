@@ -14,6 +14,8 @@
 typedef struct {
 	char* m_ShaderTitle; // 'string' in c
 	a3_DemoStateShader m_VertexShader;
+	a3_ShaderType m_ShaderType;
+	char* m_ShaderName;
 } Shader;
 
 void loadShader();
