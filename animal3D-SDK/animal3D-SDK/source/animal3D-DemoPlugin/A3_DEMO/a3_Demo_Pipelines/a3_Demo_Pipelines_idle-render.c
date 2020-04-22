@@ -54,8 +54,6 @@ void a3pipelines_render_controls(a3_DemoState const* demoState, a3_Demo_Pipeline
 	// display mode info
 	a3byte const* pipelineText[pipelines_pipeline_max] = {
 		"Forward rendering",
-		"Deferred shading",
-		"Deferred lighting",
 	};
 
 	// forward pipeline names
@@ -186,7 +184,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 
 	// indices
 	a3ui32 i, j, k;
-
+	
 	// RGB
 	const a3vec4 rgba4[] = {
 		{ 1.0f, 0.0f, 0.0f, 1.0f },	// red
@@ -205,6 +203,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		* const cyan = rgba4[3].v, * const magenta = rgba4[4].v, * const yellow = rgba4[5].v,
 		* const orange = rgba4[6].v, * const skyblue = rgba4[7].v,
 		* const grey = rgba4[8].v, * const grey_t = rgba4[9].v;
+		
 
 	// camera used for drawing
 	const a3_DemoProjector* activeCamera = demoState->projector + demoState->activeCamera;
@@ -217,84 +216,27 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	const a3_DemoSceneObject* currentSceneObject, * endSceneObject;
 
 	//LOOK AT ME  - JAKE
-	typedef struct 
-	{
-		const a3_Texture* tex_dm;
-		const a3_Texture* tex_sm;
-		const a3mat4* atlas;
-	} JTexture;
-
-	const JTexture textures[] =
+	//What I want to do
+	//Move these over to the actual demoState and the pipeline loads it from that, or make them completely independent(much harder)
+	
+	const a4_Material textures[] =
 	{
 		{demoState->tex_stone_dm, demoState->tex_stone_dm, demoState->atlas_stone },
 		{demoState->tex_mars_dm, demoState->tex_mars_sm, demoState->atlas_mars },
 		{demoState->tex_checker, demoState->tex_checker, demoState->atlas_checker }
 	};
-
-	typedef struct
-	{
-		const a3_DemoSceneObject* obj;
-		const a3_VertexDrawable* mesh;
-		const JTexture* texture;
-	} SceneModel;
-
-	const SceneModel models[] = {
-		{demoState->planeObject, demoState->draw_plane, &textures[0]}
+	const a4_SceneModel models[] = {
+		{demoState->planeObject, demoState->draw_plane, &textures[1]}
 	};
 
-	a3ui32 modelCount = sizeof(models) / sizeof(SceneModel); //just an uint, but animal 3d specific
-
-	/*
-	// temp drawable pointers
-	const a3_VertexDrawable* drawable[] = {
-		demoState->draw_plane,
-		demoState->draw_sphere,
-		demoState->draw_cylinder,
-		demoState->draw_torus,
-		demoState->draw_teapot,
-	};
-
-	// temp texture pointers
-	const a3_Texture* texture_dm[] = {
-		demoState->tex_stone_dm,
-		demoState->tex_earth_dm,
-		demoState->tex_stone_dm,
-		demoState->tex_mars_dm,
-		demoState->tex_checker,
-	};
-	const a3_Texture* texture_sm[] = {
-		demoState->tex_stone_dm,
-		demoState->tex_earth_sm,
-		demoState->tex_stone_dm,
-		demoState->tex_mars_sm,
-		demoState->tex_checker,
-	};
-
-	// temp texture atlas matrix pointers
-	const a3mat4* atlas[] = {
-		demoState->atlas_stone,
-		demoState->atlas_earth,
-		demoState->atlas_stone,
-		demoState->atlas_mars,
-		demoState->atlas_checker,
-	};
-	*/
-
-	
-
+	a3ui32 modelCount = sizeof(models) / sizeof(a4_SceneModel); //just an uint, but animal 3d specific
 
 	// forward pipeline shader programs
 	const a3_DemoStateShaderProgram* renderProgram[pipelines_pipeline_max][pipelines_render_max] = {
 		{
 			demoState->prog_drawPhong_multi_mrt,
 			demoState->prog_drawPhong_multi_shadow_mrt,
-		}, {
-			demoState->prog_drawLightingData,
-			demoState->prog_drawLightingData,
-		}, {
-			demoState->prog_drawLightingData,
-			demoState->prog_drawLightingData,
-		},
+		}
 	};
 
 	// display shader programs
@@ -437,8 +379,6 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	{
 		// shading with MRT
 	case pipelines_forward:
-	case pipelines_deferred_shading:
-	case pipelines_deferred_lighting:
 		// target scene framebuffer
 		a3demo_setSceneState(currentWriteFBO, demoState->displaySkybox);
 		break;
@@ -515,6 +455,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	}	break;
 		// end forward scene pass
 
+		/*
 		// scene pass using deferred shading
 	case pipelines_deferred_shading: {
 		// draw objects as-is
@@ -569,6 +510,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		glDisable(GL_BLEND);
 	}	break;
 		// end deferred lighting scene pass
+		*/
 	}
 
 
@@ -606,7 +548,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		currentReadFBO = readFBO[currentPass][0];
 		a3framebufferBindColorTexture(currentReadFBO, a3tex_unit00, 0);
 		break;
-
+	/*
 	case pipelines_deferred_shading:
 		// use deferred shading program
 		currentDemoProgram = demoState->prog_drawPhong_multi_deferred;
@@ -647,7 +589,9 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		// uniforms
 		a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, skyblue);
 		break;
+		*/
 	}
+	
 	// reset other uniforms
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, a3mat4_identity.mm);
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);

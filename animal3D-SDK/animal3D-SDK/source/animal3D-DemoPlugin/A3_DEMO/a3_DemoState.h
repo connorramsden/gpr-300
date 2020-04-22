@@ -122,9 +122,47 @@ extern "C"
 	
 //-----------------------------------------------------------------------------
 
-	// persistent demo state data structure
+	// persistent demo state data structure, contains all the storage space allocation needed for animal
+
+	typedef struct
+	{
+		const a3_Texture* tex_dm;
+		const a3_Texture* tex_sm;
+		const a3mat4* atlas;
+	} a4_Material;
+
+
+
+	typedef struct
+	{
+		const a3_DemoSceneObject* obj;
+		const a3_VertexDrawable* mesh;
+		const a4_Material* texture;
+	} a4_SceneModel;
+
+/*
+	const a3vec4 rgba4[] = {
+			{ 1.0f, 0.0f, 0.0f, 1.0f },	// red
+			{ 0.0f, 1.0f, 0.0f, 1.0f },	// green
+			{ 0.0f, 0.0f, 1.0f, 1.0f },	// blue
+			{ 0.0f, 1.0f, 1.0f, 1.0f },	// cyan
+			{ 1.0f, 0.0f, 1.0f, 1.0f },	// magenta
+			{ 1.0f, 1.0f, 0.0f, 1.0f },	// yellow
+			{ 1.0f, 0.5f, 0.0f, 1.0f },	// orange
+			{ 0.0f, 0.5f, 1.0f, 1.0f },	// sky blue
+			{ 0.5f, 0.5f, 0.5f, 1.0f },	// solid grey
+			{ 0.5f, 0.5f, 0.5f, 0.5f }	// translucent grey
+	};
+
+	const a3real
+		* const red = rgba4[0].v, * const green = rgba4[1].v, * const blue = rgba4[2].v,
+		* const cyan = rgba4[3].v, * const magenta = rgba4[4].v, * const yellow = rgba4[5].v,
+		* const orange = rgba4[6].v, * const skyblue = rgba4[7].v,
+		* const grey = rgba4[8].v, * const grey_t = rgba4[9].v;
+*/
 	struct a3_DemoState
 	{
+
 		//---------------------------------------------------------------------
 		// general variables pertinent to the state
 
@@ -196,13 +234,6 @@ extern "C"
 		a3mat4 deferredLightMVP[demoStateMaxCount_lightVolume], deferredLightMVPB[demoStateMaxCount_lightVolume];
 
 
-		// texture atlas transforms
-		union {
-			a3mat4 atlasTransform[4];
-			struct {
-				a3mat4 atlas_stone[1], atlas_earth[1], atlas_mars[1], atlas_checker[1];
-			};
-		};
 
 
 		// test animation controller and waypoints for interpolation
@@ -262,6 +293,8 @@ extern "C"
 					shadowLight[1];						// light for capturing shadow map
 			};
 		};
+
+
 
 
 		// timers
@@ -379,6 +412,14 @@ extern "C"
 					tex_ramp_dm[1],
 					tex_ramp_sm[1],
 					tex_checker[1];
+			};
+		};
+
+		// texture atlas transforms
+		union {
+			a3mat4 atlasTransform[4];
+			struct {
+				a3mat4 atlas_stone[1], atlas_earth[1], atlas_mars[1], atlas_checker[1];
 			};
 		};
 

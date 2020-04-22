@@ -44,7 +44,7 @@ void a3pipelines_update(a3_DemoState* demoState, a3_Demo_Pipelines* demoMode, a3
 	a3ui32 i;
 
 	a3mat4* lightMVPptr, * lightMVPBptr;
-	a3ui32 tmpLightCount, tmpBlockLightCount;
+	a3ui32 tmpLightCount;
 
 	a3_DemoPointLight* pointLight;
 
@@ -91,6 +91,7 @@ void a3pipelines_update(a3_DemoState* demoState, a3_Demo_Pipelines* demoMode, a3
 	
 	// upload buffer data
 	tmpLightCount = demoState->deferredLightCount;
+	/*
 	if (tmpLightCount && demoMode->pipeline == pipelines_deferred_lighting)
 	{
 		demoState->deferredLightBlockCount = (tmpLightCount - 1) / demoStateMaxCount_lightVolumePerBlock + 1;
@@ -112,6 +113,8 @@ void a3pipelines_update(a3_DemoState* demoState, a3_Demo_Pipelines* demoMode, a3
 	{
 		demoState->deferredLightBlockCount = 0;
 	}
+	*/
+	demoState->deferredLightBlockCount = 0;
 }
 
 
