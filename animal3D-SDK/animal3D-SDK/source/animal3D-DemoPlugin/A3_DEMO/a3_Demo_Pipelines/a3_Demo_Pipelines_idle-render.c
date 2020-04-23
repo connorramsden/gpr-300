@@ -223,10 +223,15 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	{
 		{demoState->tex_stone_dm, demoState->tex_stone_dm, demoState->atlas_stone },
 		{demoState->tex_mars_dm, demoState->tex_mars_sm, demoState->atlas_mars },
-		{demoState->tex_checker, demoState->tex_checker, demoState->atlas_checker }
+		{demoState->tex_checker, demoState->tex_checker, demoState->atlas_checker },
+		{demoState->tex_earth_dm, demoState->tex_earth_sm, demoState->atlas_earth}
 	};
 	const a4_SceneModel models[] = {
-		{demoState->planeObject, demoState->draw_plane, &textures[1]}
+		{demoState->planeObject, demoState->draw_plane, &textures[0]},
+		{demoState->torusObject, demoState->draw_torus, &textures[1]},
+		{demoState->teapotObject, demoState->draw_teapot, &textures[2]},
+		{demoState->sphereObject, demoState->draw_sphere, &textures[3]},
+		{demoState->cylinderObject, demoState->draw_cylinder, &textures[0]}
 	};
 
 	a3ui32 modelCount = sizeof(models) / sizeof(a4_SceneModel); //just an uint, but animal 3d specific
@@ -355,8 +360,17 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	glCullFace(GL_FRONT);
 	currentDemoProgram = demoState->prog_transform;
 	a3shaderProgramActivate(currentDemoProgram->program);
+
+	/*
+		for (k = 0,
+		currentSceneObject = demoState->planeObject, endSceneObject = demoState->teapotObject;
+		currentSceneObject <= endSceneObject;
+		++k, ++currentSceneObject)
+		a3demo_drawModelSimple_activateModel(modelViewProjectionMat.m, activeShadowCaster->viewProjectionMat.m, currentSceneObject->modelMat.m, currentDemoProgram, drawable[k]);
+	*/
+
 	//changed this loop - JAKE
-	for (k = 0; k < modelCount; k++)
+	for (k = 0; k < modelCount; ++k)
 	{
 		a3demo_drawModelSimple_activateModel(modelViewProjectionMat.m, activeShadowCaster->viewProjectionMat.m, models[k].obj->modelMat.m, currentDemoProgram, models[k].mesh);
 	}

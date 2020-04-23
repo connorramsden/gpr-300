@@ -581,6 +581,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 		const a3_DemoStateShader* fragmentShader;
 		const char* m_ShaderName;
 	} ShaderProgram; 
+
 	const ShaderProgram programList[3] =
 	{
 		{ demoState->prog_transform, shaderList.passthru_transform_vs, NULL, "prog:transform" },
