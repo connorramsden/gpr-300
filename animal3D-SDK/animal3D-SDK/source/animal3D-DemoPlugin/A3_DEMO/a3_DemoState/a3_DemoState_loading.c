@@ -573,53 +573,78 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	//LOOK AT ME!
 	typedef struct 
 	{
-		const a3_DemoStateShaderProgram* program;
-		const a3_DemoStateShader* vertexShader;
-		const a3_DemoStateShader* fragmentShader;
-		const char* m_ShaderName;
+		a3_DemoStateShaderProgram* program;
+		a3_DemoStateShader* vertexShader;
+		a3_DemoStateShader* geometryShader;
+		a3_DemoStateShader* fragmentShader;
+		const char* shaderName;
 	} ShaderProgram; 
 
-	// Is this intended to replace the blow program setups? - Connor
-	const ShaderProgram programList[3] =
+	// Is this intended to replace the below program setups? - Connor : Yes - Jake
+	const ShaderProgram programList[] =
 	{
-		{ demoState->prog_transform, shaderList.passthru_transform_vs, NULL, "prog:transform" },
-		{ demoState->prog_transform_instanced, shaderList.passthru_transform_instanced_vs, NULL, "prog:transform-inst" },
-		{ demoState->prog_drawColorUnif, shaderList.passthru_transform_vs, shaderList.drawColorUnif_fs, "prog:draw-col-unif" }
+		// transform-only program
+		{ demoState->prog_transform, shaderList.passthru_transform_vs, NULL, NULL, "prog:transform" },
+		{ demoState->prog_transform_instanced, shaderList.passthru_transform_instanced_vs, NULL, NULL, "prog:transform-inst" },
+		// color attrib program
+		{ demoState->prog_drawColorUnif, shaderList.passthru_transform_vs, NULL, shaderList.drawColorUnif_fs, "prog:draw-col-unif" },
+		{ demoState->prog_drawColorAttrib, shaderList.passColor_transform_vs, NULL, shaderList.drawColorAttrib_fs, "prog:draw-col-attr" },
+		// uniform color program with instancing
+		{ demoState->prog_drawColorUnif_instanced, shaderList.passthru_transform_instanced_vs, NULL, shaderList.drawColorAttrib_fs, "prog:draw-col-unif-inst" },
+		// color attrib program with instancing	
+		{ demoState->prog_drawColorAttrib_instanced, shaderList.passColor_transform_instanced_vs, NULL, shaderList.drawColorAttrib_fs, "prog:draw-col-attr-inst" }
 	};
+
+	const a3ui32 programCount = sizeof(programList) / sizeof(ShaderProgram);
+
+	for (a3ui32 i = 0; i < programCount; i++)
+	{
+		currentDemoProg = programList[i].program;
+		a3shaderProgramCreate(currentDemoProg->program, programList[i].shaderName);
+		a3shaderProgramAttachShader(currentDemoProg->program, programList[i].vertexShader->shader);
+		if (programList[i].fragmentShader != NULL)
+		{
+			a3shaderProgramAttachShader(currentDemoProg->program, programList[i].fragmentShader->shader);
+		}
+		if (programList[i].geometryShader != NULL)
+		{
+			a3shaderProgramAttachShader(currentDemoProg->program, programList[i].geometryShader->shader);
+		}
+	}
 	
 	// setup programs: 
 	//	- create program object
 	//	- attach shader objects
 
 	// base programs: 
-	// transform-only program
-	currentDemoProg = demoState->prog_transform;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:transform");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passthru_transform_vs->shader);
-	// transform-only program with instancing
-	currentDemoProg = demoState->prog_transform_instanced;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:transform-inst");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passthru_transform_instanced_vs->shader);
-	// uniform color program
+	
+	/*
+
 	currentDemoProg = demoState->prog_drawColorUnif;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-col-unif");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passthru_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorUnif_fs->shader);
-	// color attrib program
+
+	
 	currentDemoProg = demoState->prog_drawColorAttrib;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-col-attr");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passColor_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
-	// uniform color program with instancing
+
 	currentDemoProg = demoState->prog_drawColorUnif_instanced;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-col-unif-inst");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passthru_transform_instanced_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorUnif_fs->shader);
+	
+
+
 	// color attrib program with instancing
 	currentDemoProg = demoState->prog_drawColorAttrib_instanced;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-col-attr-inst");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passColor_transform_instanced_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
+	*/
+
 
 	// 02-shading programs: 
 	// texturing program
