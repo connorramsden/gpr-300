@@ -219,6 +219,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	//What I want to do
 	//Move these over to the actual demoState and the pipeline loads it from that, or make them completely independent(much harder)
 	
+	// Initialize new textures here
 	const a4_Material textures[] =
 	{
 		{demoState->tex_stone_dm, demoState->tex_stone_dm, demoState->atlas_stone },
@@ -226,6 +227,8 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		{demoState->tex_checker, demoState->tex_checker, demoState->atlas_checker },
 		{demoState->tex_earth_dm, demoState->tex_earth_sm, demoState->atlas_earth}
 	};
+
+	// Initialize models with textures here
 	const a4_SceneModel models[] = {
 		{demoState->planeObject, demoState->draw_plane, &textures[0]},
 		{demoState->torusObject, demoState->draw_torus, &textures[1]},
@@ -234,6 +237,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		{demoState->cylinderObject, demoState->draw_cylinder, &textures[0]}
 	};
 
+	// Want this to be accessible across all a3_DemoState_x files for loops
 	a3ui32 modelCount = sizeof(models) / sizeof(a4_SceneModel); //just an uint, but animal 3d specific
 
 	// forward pipeline shader programs
@@ -361,7 +365,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	currentDemoProgram = demoState->prog_transform;
 	a3shaderProgramActivate(currentDemoProgram->program);
 
-	/*
+	/* // Original Dan Loop // 
 		for (k = 0,
 		currentSceneObject = demoState->planeObject, endSceneObject = demoState->teapotObject;
 		currentSceneObject <= endSceneObject;
@@ -370,6 +374,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	*/
 
 	//changed this loop - JAKE
+	// This loop works fine - Connor
 	for (k = 0; k < modelCount; ++k)
 	{
 		a3demo_drawModelSimple_activateModel(modelViewProjectionMat.m, activeShadowCaster->viewProjectionMat.m, models[k].obj->modelMat.m, currentDemoProgram, models[k].mesh);

@@ -411,10 +411,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 		a3tex_unit08, a3tex_unit09, a3tex_unit10, a3tex_unit11,
 		a3tex_unit12, a3tex_unit13, a3tex_unit14, a3tex_unit15
 	};
-
-	// LOOK AT ME HERE
 	
-
 	// list of all unique shaders
 	// this is a good idea to avoid multi-loading 
 	//	those that are shared between programs
@@ -582,10 +579,10 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 		const char* m_ShaderName;
 	} ShaderProgram; 
 
+	// Is this intended to replace the blow program setups? - Connor
 	const ShaderProgram programList[3] =
 	{
 		{ demoState->prog_transform, shaderList.passthru_transform_vs, NULL, "prog:transform" },
-		//{ "prog:transform", NULL, shaderList.passthru_transform_vs, demoState->prog_transform }
 		{ demoState->prog_transform_instanced, shaderList.passthru_transform_instanced_vs, NULL, "prog:transform-inst" },
 		{ demoState->prog_drawColorUnif, shaderList.passthru_transform_vs, shaderList.drawColorUnif_fs, "prog:draw-col-unif" }
 	};
@@ -1132,6 +1129,8 @@ void a3demo_refresh(a3_DemoState* demoState)
 //	currentVAO = demoState->vao_position_texcoord_normal;
 	currentVAO = demoState->vao_tangentbasis;
 	currentVAO->vertexBuffer = currentBuff;
+
+	// TO-DO - Convert this to a loop
 	a3_refreshDrawable_internal(demoState->draw_plane, currentVAO, currentBuff);
 	a3_refreshDrawable_internal(demoState->draw_sphere, currentVAO, currentBuff);
 	a3_refreshDrawable_internal(demoState->draw_cylinder, currentVAO, currentBuff);
