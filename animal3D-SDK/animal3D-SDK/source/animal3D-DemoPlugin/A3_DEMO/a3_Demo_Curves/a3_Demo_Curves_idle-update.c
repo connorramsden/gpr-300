@@ -83,14 +83,6 @@ void a3curves_update(a3_DemoState* demoState, a3_Demo_Curves* demoMode, a3f64 dt
 		//		-> update parameter in range [0, 1)
 		// update controller
 
-
-
-
-
-
-
-
-
 		// set key indices
 		k[0] = i = demoState->segmentIndex;
 		k[1] = (i + 1) % demoState->segmentCount;

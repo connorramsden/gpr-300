@@ -99,7 +99,6 @@ extern "C"
 		pipelines_passLighting,			// light pre-pass for deferred lighting
 
 		pipelines_passComposite,		// composite for post-processing stage
-
 		pipelines_passBright_2,			// bright pass for bloom (half screen size)
 		pipelines_passBlurH_2,			// horizontal blur for bloom (half screen size)
 		pipelines_passBlurV_2,			// horizontal blur for bloom (half screen size)
@@ -113,6 +112,23 @@ extern "C"
 
 		pipelines_pass_max
 	};
+	/*
+	enum a4_Demo_Pipelines_Bloom_PassName
+	{
+		pipelines_passBright_2,			// bright pass for bloom (half screen size)
+		pipelines_passBlurH_2,			// horizontal blur for bloom (half screen size)
+		pipelines_passBlurV_2,			// horizontal blur for bloom (half screen size)
+		pipelines_passBright_4,			// bright pass for bloom (quarter screen size)
+		pipelines_passBlurH_4,			// horizontal blur for bloom (quarter screen size)
+		pipelines_passBlurV_4,			// horizontal blur for bloom (quarter screen size)
+		pipelines_passBright_8,			// bright pass for bloom (eighth screen size)
+		pipelines_passBlurH_8,			// horizontal blur for bloom (eighth screen size)
+		pipelines_passBlurV_8,			// horizontal blur for bloom (eighth screen size)
+		pipelines_passBlend,			// bloom composite pass
+
+		pipelines_bloom_pass_max
+	};
+	*/
 
 	// render target names
 	enum a3_Demo_Pipelines_TargetName

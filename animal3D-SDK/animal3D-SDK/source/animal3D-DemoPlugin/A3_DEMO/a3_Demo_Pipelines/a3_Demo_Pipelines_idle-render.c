@@ -236,6 +236,7 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		{demoState->sphereObject, demoState->draw_sphere, &textures[3]},
 		{demoState->cylinderObject, demoState->draw_cylinder, &textures[0]}
 	};
+	//NOTE Position does not work, but i was wondering if this would be the defn of instancing? 
 
 	// Want this to be accessible across all a3_DemoState_x files for loops
 	a3ui32 modelCount = sizeof(models) / sizeof(a4_SceneModel); //just an uint, but animal 3d specific
@@ -377,6 +378,9 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 	// This loop works fine - Connor
 	for (k = 0; k < modelCount; ++k)
 	{
+		//a3real4* mat[4] = models[k].obj->modelMat.m;
+		//mat = (models[k]).pos.x;
+
 		a3demo_drawModelSimple_activateModel(modelViewProjectionMat.m, activeShadowCaster->viewProjectionMat.m, models[k].obj->modelMat.m, currentDemoProgram, models[k].mesh);
 	}
 		

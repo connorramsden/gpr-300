@@ -592,7 +592,18 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 		// uniform color program with instancing
 		{ demoState->prog_drawColorUnif_instanced, shaderList.passthru_transform_instanced_vs, NULL, shaderList.drawColorAttrib_fs, "prog:draw-col-unif-inst" },
 		// color attrib program with instancing	
-		{ demoState->prog_drawColorAttrib_instanced, shaderList.passColor_transform_instanced_vs, NULL, shaderList.drawColorAttrib_fs, "prog:draw-col-attr-inst" }
+		{ demoState->prog_drawColorAttrib_instanced, shaderList.passColor_transform_instanced_vs, NULL, shaderList.drawColorAttrib_fs, "prog:draw-col-attr-inst" },
+		// 02 - texturing program
+		{ demoState->prog_drawTexture, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_fs, "prog:draw-tex" },
+		// Lambert shading program
+		{ demoState->prog_drawLambert_multi, shaderList.passLightingData_transform_vs, NULL, shaderList.drawLambert_multi_fs, "prog:draw-Lambert-multi" },
+		// Phong
+		{ demoState->prog_drawPhong_multi, shaderList.passLightingData_transform_vs, NULL, shaderList.drawNonphoto_multi_fs, "prog:draw-Phong-multi" },
+		// Non-photorealistic
+		{ demoState->prog_drawNonphoto_multi, shaderList.passLightingData_transform_vs, NULL, shaderList.drawNonphoto_multi_fs, "prog:draw-nonphoto-multi" },
+		// 03-framebuffer programs: 
+		// texturing program with MRT
+		{ demoState->prog_drawTexture_mrt, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_mrt_fs, "prog:draw-tex-mrt" }
 	};
 
 	const a3ui32 programCount = sizeof(programList) / sizeof(ShaderProgram);
@@ -617,63 +628,6 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	//	- attach shader objects
 
 	// base programs: 
-	
-	/*
-
-	currentDemoProg = demoState->prog_drawColorUnif;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-col-unif");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passthru_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorUnif_fs->shader);
-
-	
-	currentDemoProg = demoState->prog_drawColorAttrib;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-col-attr");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passColor_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
-
-	currentDemoProg = demoState->prog_drawColorUnif_instanced;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-col-unif-inst");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passthru_transform_instanced_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorUnif_fs->shader);
-	
-
-
-	// color attrib program with instancing
-	currentDemoProg = demoState->prog_drawColorAttrib_instanced;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-col-attr-inst");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passColor_transform_instanced_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
-	*/
-
-
-	// 02-shading programs: 
-	// texturing program
-	currentDemoProg = demoState->prog_drawTexture;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_fs->shader);
-	// Lambert shading program
-	currentDemoProg = demoState->prog_drawLambert_multi;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Lambert-multi");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawLambert_multi_fs->shader);
-	// Phong shading program
-	currentDemoProg = demoState->prog_drawPhong_multi;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-multi");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_multi_fs->shader);
-	// nonphotorealistic shading program
-	currentDemoProg = demoState->prog_drawNonphoto_multi;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-nonphoto-multi");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawNonphoto_multi_fs->shader);
-
-	// 03-framebuffer programs: 
-	// texturing program with MRT
-	currentDemoProg = demoState->prog_drawTexture_mrt;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-mrt");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_mrt_fs->shader);
 	// Lambert shading program with MRT
 	currentDemoProg = demoState->prog_drawLambert_multi_mrt;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Lambert-multi-mrt");

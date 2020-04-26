@@ -123,7 +123,7 @@ extern "C"
 //-----------------------------------------------------------------------------
 
 	// persistent demo state data structure, contains all the storage space allocation needed for animal
-
+	 
 	typedef struct
 	{
 		const a3_Texture* tex_dm;
