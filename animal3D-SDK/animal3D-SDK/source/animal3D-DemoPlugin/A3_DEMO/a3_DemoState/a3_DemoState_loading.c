@@ -380,15 +380,6 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	a3demo_initDummyDrawable_internal(demoState);
 }
 
-///LOOK AT ME
-//extern "C++" void loadShadersModern(a3_DemoState* demoState, Sha)
-//convert the c++ class to c accessible, after setting all the information, then call loadShader in C
-//we could insert a simple c++ interface that would still run mostly in c by organizing the information in the shader
-
-extern void loadShadersRedux(a3_DemoState* demoState, Shader shaderToLoad) {
-
-}
-
 
 // utility to load shaders
 void a3demo_loadShaders(a3_DemoState *demoState)
@@ -578,14 +569,19 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 		a3_DemoStateShader* geometryShader;
 		a3_DemoStateShader* fragmentShader;
 		const char* shaderName;
-	} ShaderProgram; 
+	} a4_ShaderProgram; 
 
-	// Is this intended to replace the below program setups? - Connor : Yes - Jake
-	const ShaderProgram programList[] =
+	a4_ShaderProgram exampleProgram = { demoState->prog_transform,
+		shaderList.passthru_transform_vs, //vertex
+		NULL, //geometry
+		NULL,  //fragment
+		"prog:transform" //name
+	};
+
+	const a4_ShaderProgram programList[] =
 	{
-		// transform-only program
-		{ demoState->prog_transform, shaderList.passthru_transform_vs, NULL, NULL, "prog:transform" },
-		{ demoState->prog_transform_instanced, shaderList.passthru_transform_instanced_vs, NULL, NULL, "prog:transform-inst" },
+		exampleProgram, //add programs in up top to organize if preferred
+		{ demoState->prog_transform_instanced, shaderList.passthru_transform_instanced_vs,NULL, NULL, "prog:transform-inst" },
 		// color attrib program
 		{ demoState->prog_drawColorUnif, shaderList.passthru_transform_vs, NULL, shaderList.drawColorUnif_fs, "prog:draw-col-unif" },
 		{ demoState->prog_drawColorAttrib, shaderList.passColor_transform_vs, NULL, shaderList.drawColorAttrib_fs, "prog:draw-col-attr" },
@@ -603,125 +599,62 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 		{ demoState->prog_drawNonphoto_multi, shaderList.passLightingData_transform_vs, NULL, shaderList.drawNonphoto_multi_fs, "prog:draw-nonphoto-multi" },
 		// 03-framebuffer programs: 
 		// texturing program with MRT
-		{ demoState->prog_drawTexture_mrt, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_mrt_fs, "prog:draw-tex-mrt" }
+		{ demoState->prog_drawTexture_mrt, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_mrt_fs, "prog:draw-tex-mrt" },
+		// Lambert shading program with MRT
+		{ demoState->prog_drawLambert_multi_mrt, shaderList.passLightingData_transform_vs, NULL, shaderList.drawLambert_multi_mrt_fs,  "prog:draw-Lambert-multi-mrt" },
+		// Phong shading program with MRT
+		{ demoState->prog_drawPhong_multi_mrt, shaderList.passLightingData_transform_vs, NULL, shaderList.drawPhong_multi_mrt_fs,  "prog:draw-Phong-multi-mrt" },
+		// nonphotorealistic shading program with MRT
+		{ demoState->prog_drawNonphoto_multi_mrt, shaderList.passLightingData_transform_vs, NULL, shaderList.drawNonphoto_multi_mrt_fs,  "prog:draw-nonphoto-multi-mrt" },
+		// texturing with color manipulation
+		{ demoState->prog_drawTexture_colorManip, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_colorManip_fs,  "prog:draw-tex-colormanip" },
+		// texturing with texcoord manipulation
+		{ demoState->prog_drawTexture_coordManip, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_coordManip_fs,  "prog:draw-tex-coordmanip" },
+		// 04-multipass programs: 
+		// Phong shading with shadow mapping and MRT
+		{ demoState->prog_drawPhong_multi_shadow_mrt, shaderList.passLightingData_shadowCoord_transform_vs, NULL, shaderList.drawPhong_multi_shadow_mrt_fs,  "prog:draw-Phong-multi-shadow" },
+		// texturing program with outlines
+		{ demoState->prog_drawTexture_outline, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_outline_fs, "prog:draw-tex-outline" },
+		// 05-bloom programs: 
+		// texturing with bright-pass or tone-mapping
+		{ demoState->prog_drawTexture_brightPass, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_brightPass_fs, "prog:draw-tex-bright" },
+		// texturing with Gaussian blurring
+		{ demoState->prog_drawTexture_blurGaussian, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_blurGaussian_fs, "prog:draw-tex-blur" },
+		// texturing with bloom composition
+		{ demoState->prog_drawTexture_blendScreen4, shaderList.passTexcoord_transform_vs, NULL, shaderList.drawTexture_blendScreen4_fs, "prog:draw-tex-blend4" },
+		// 06-deferred programs: 
+		// draw lighting data as g-buffers
+		{ demoState->prog_drawLightingData, shaderList.passLightingData_transform_bias_vs, NULL, shaderList.drawLightingData_fs, "prog:draw-lightingdata" },
+		// draw Phong shading deferred
+		{ demoState->prog_drawPhong_multi_deferred, shaderList.passAtlasTexcoord_transform_vs, NULL, shaderList.drawPhong_multi_deferred_fs, "prog:draw-Phong-multi-def" },
+		// draw Phong light volume
+		{ demoState->prog_drawPhongVolume_instanced, shaderList.passBiasedClipCoord_transform_instanced_vs, NULL, shaderList.drawPhongVolume_fs, "prog:draw-Phong-volume-inst" },
+		// draw composited Phong shading model
+		{ demoState->prog_drawPhongComposite, shaderList.passAtlasTexcoord_transform_vs, NULL, shaderList.drawPhongComposite_fs, "prog:draw-Phong-composite" },
+		// 07-curves programs: 
+		// draw Phong forward MRT
+		{ demoState->prog_drawPhong_multi_forward_mrt, shaderList.passTangentBasis_transform_instanced_vs, NULL, shaderList.drawPhong_multi_forward_mrt_fs, "prog:draw-Phong-mul-fwd-mrt" },
+		// draw overlays (tangents & wireframe)
+		{ demoState->prog_drawOverlays_tangents_wireframe, shaderList.passTangentBasis_transform_instanced_vs, shaderList.drawOverlays_tangents_wireframe_gs, shaderList.drawColorAttrib_fs, "prog:draw-overlays-tb-wire" },
+		{ demoState->prog_drawCurveSegment, shaderList.passthru_vs, shaderList.drawCurveSegment_gs, shaderList.drawColorAttrib_fs, "prog:draw-curve-segment" },
 	};
 
-	const a3ui32 programCount = sizeof(programList) / sizeof(ShaderProgram);
+	const a3ui32 programCount = sizeof(programList) / sizeof(a4_ShaderProgram);
 
 	for (a3ui32 i = 0; i < programCount; i++)
 	{
 		currentDemoProg = programList[i].program;
-		a3shaderProgramCreate(currentDemoProg->program, programList[i].shaderName);
-		a3shaderProgramAttachShader(currentDemoProg->program, programList[i].vertexShader->shader);
+		a3shaderProgramCreate(currentDemoProg->program, programList[i].shaderName); //create
+		a3shaderProgramAttachShader(currentDemoProg->program, programList[i].vertexShader->shader); //attach
 		if (programList[i].fragmentShader != NULL)
 		{
-			a3shaderProgramAttachShader(currentDemoProg->program, programList[i].fragmentShader->shader);
+			a3shaderProgramAttachShader(currentDemoProg->program, programList[i].fragmentShader->shader); //attach if exist
 		}
 		if (programList[i].geometryShader != NULL)
 		{
-			a3shaderProgramAttachShader(currentDemoProg->program, programList[i].geometryShader->shader);
+			a3shaderProgramAttachShader(currentDemoProg->program, programList[i].geometryShader->shader); //attach if exist
 		}
 	}
-	
-	// setup programs: 
-	//	- create program object
-	//	- attach shader objects
-
-	// base programs: 
-	// Lambert shading program with MRT
-	currentDemoProg = demoState->prog_drawLambert_multi_mrt;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Lambert-multi-mrt");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawLambert_multi_mrt_fs->shader);
-	// Phong shading program with MRT
-	currentDemoProg = demoState->prog_drawPhong_multi_mrt;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-multi-mrt");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_multi_mrt_fs->shader);
-	// nonphotorealistic shading program with MRT
-	currentDemoProg = demoState->prog_drawNonphoto_multi_mrt;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-nonphoto-multi-mrt");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawNonphoto_multi_mrt_fs->shader);
-	// texturing with color manipulation
-	currentDemoProg = demoState->prog_drawTexture_colorManip;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-colormanip");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_colorManip_fs->shader);
-	// texturing with texcoord manipulation
-	currentDemoProg = demoState->prog_drawTexture_coordManip;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-coordmanip");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_coordManip_fs->shader);
-
-	// 04-multipass programs: 
-	// Phong shading with shadow mapping and MRT
-	currentDemoProg = demoState->prog_drawPhong_multi_shadow_mrt;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-multi-shadow");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_shadowCoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_multi_shadow_mrt_fs->shader);
-	// texturing program with outlines
-	currentDemoProg = demoState->prog_drawTexture_outline;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-outline");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_outline_fs->shader);
-
-	// 05-bloom programs: 
-	// texturing with bright-pass or tone-mapping
-	currentDemoProg = demoState->prog_drawTexture_brightPass;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-bright");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_brightPass_fs->shader);
-	// texturing with Gaussian blurring
-	currentDemoProg = demoState->prog_drawTexture_blurGaussian;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-blur");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_blurGaussian_fs->shader);
-	// texturing with bloom composition
-	currentDemoProg = demoState->prog_drawTexture_blendScreen4;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-blend4");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_blendScreen4_fs->shader);
-
-	// 06-deferred programs: 
-	// draw lighting data as g-buffers
-	currentDemoProg = demoState->prog_drawLightingData;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-lightingdata");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passLightingData_transform_bias_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawLightingData_fs->shader);
-	// draw Phong shading deferred
-	currentDemoProg = demoState->prog_drawPhong_multi_deferred;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-multi-def");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passAtlasTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_multi_deferred_fs->shader);
-	// draw Phong light volume
-	currentDemoProg = demoState->prog_drawPhongVolume_instanced;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-volume-inst");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passBiasedClipCoord_transform_instanced_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhongVolume_fs->shader);
-	// draw composited Phong shading model
-	currentDemoProg = demoState->prog_drawPhongComposite;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-composite");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passAtlasTexcoord_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhongComposite_fs->shader);
-
-	// 07-curves programs: 
-	// draw Phong forward MRT
-	currentDemoProg = demoState->prog_drawPhong_multi_forward_mrt;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-mul-fwd-mrt");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_instanced_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_multi_forward_mrt_fs->shader);
-	// draw overlays (tangents & wireframe)
-	currentDemoProg = demoState->prog_drawOverlays_tangents_wireframe;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-overlays-tb-wire");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_instanced_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawOverlays_tangents_wireframe_gs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
-	currentDemoProg = demoState->prog_drawCurveSegment;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-curve-segment");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passthru_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawCurveSegment_gs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
 
 
 	// activate a primitive for validation

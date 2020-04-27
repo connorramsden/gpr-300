@@ -140,26 +140,6 @@ extern "C"
 		const a4_Material* texture;
 	} a4_SceneModel;
 
-/*
-	const a3vec4 rgba4[] = {
-			{ 1.0f, 0.0f, 0.0f, 1.0f },	// red
-			{ 0.0f, 1.0f, 0.0f, 1.0f },	// green
-			{ 0.0f, 0.0f, 1.0f, 1.0f },	// blue
-			{ 0.0f, 1.0f, 1.0f, 1.0f },	// cyan
-			{ 1.0f, 0.0f, 1.0f, 1.0f },	// magenta
-			{ 1.0f, 1.0f, 0.0f, 1.0f },	// yellow
-			{ 1.0f, 0.5f, 0.0f, 1.0f },	// orange
-			{ 0.0f, 0.5f, 1.0f, 1.0f },	// sky blue
-			{ 0.5f, 0.5f, 0.5f, 1.0f },	// solid grey
-			{ 0.5f, 0.5f, 0.5f, 0.5f }	// translucent grey
-	};
-
-	const a3real
-		* const red = rgba4[0].v, * const green = rgba4[1].v, * const blue = rgba4[2].v,
-		* const cyan = rgba4[3].v, * const magenta = rgba4[4].v, * const yellow = rgba4[5].v,
-		* const orange = rgba4[6].v, * const skyblue = rgba4[7].v,
-		* const grey = rgba4[8].v, * const grey_t = rgba4[9].v;
-*/
 	struct a3_DemoState
 	{
 
@@ -182,6 +162,8 @@ extern "C"
 		a3real frameWidthInv, frameHeightInv, frameAspect;
 		a3i32 frameBorder;
 
+
+		
 
 		//---------------------------------------------------------------------
 		// objects that have known or fixed instance count in the whole demo

@@ -203,8 +203,9 @@ void a3pipelines_render(a3_DemoState const* demoState, a3_Demo_Pipelines const* 
 		* const cyan = rgba4[3].v, * const magenta = rgba4[4].v, * const yellow = rgba4[5].v,
 		* const orange = rgba4[6].v, * const skyblue = rgba4[7].v,
 		* const grey = rgba4[8].v, * const grey_t = rgba4[9].v;
+	
 		
-
+		
 	// camera used for drawing
 	const a3_DemoProjector* activeCamera = demoState->projector + demoState->activeCamera;
 	const a3_DemoSceneObject* activeCameraObject = activeCamera->sceneObject;
