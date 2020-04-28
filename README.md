@@ -4,6 +4,8 @@
 
 This project provided students with a better understanding of the optimizations that go into creating a graphics framework. The goal of the project was to provide additional optimizations to the existing shader creation and implementation pipeline within Animal3D.
 
+A side goal of the project is to help define similarities between Animal and other engines, spotting isomorphic systems between Animal and Unity
+
 ## Team Members
 
 * [Connor Ramsden](https://github.com/connorramsden)
